@@ -1,9 +1,11 @@
 use_frameworks!
 
-platform :ios, '10.0'
+platform :ios, '12.0'
 
 target 'ZHHAlertViewController_Example' do
   pod 'ZHHAlertViewController', :path => '../'
+  pod 'LookinServer', :configurations => ['Debug']
+  pod 'ZHHAnneKit'
 
   target 'ZHHAlertViewController_Tests' do
     inherit! :search_paths

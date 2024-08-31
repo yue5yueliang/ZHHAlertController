@@ -24,7 +24,10 @@ NSString *longSampleMessage = @"Yesterday, all my troubles seemed so far away. N
 - (void)viewDidLoad {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
-    self.dataSource = @[@"普通提示",
+    
+    self.title = @"示例";
+    self.dataSource = @[@"自定义样式",
+                        @"普通提示",
                         @"长文本提示",
                         @"无标题文本提示",
                         @"一个按钮",
@@ -32,12 +35,10 @@ NSString *longSampleMessage = @"Yesterday, all my troubles seemed so far away. N
                         @"自定义背景背景",
                         @"自定义 Frame",
                         @"自定义 View",
-                        @"Appear Fade In",
-                        @"Appear From Left"];
+                        @"淡入动画",
+                        @"从左侧飞入"];
     self.mainTableView = ({
         UITableView *tableView = [UITableView new];
-        tableView.layer.borderWidth = 1.0;
-        tableView.layer.borderColor = UIColor.purpleColor.CGColor;
         tableView.showsVerticalScrollIndicator = NO;
         tableView.showsHorizontalScrollIndicator = NO;
         tableView.dataSource = self;
@@ -67,7 +68,12 @@ NSString *longSampleMessage = @"Yesterday, all my troubles seemed so far away. N
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
     
-    switch (indexPath.row + 1) {
+    switch (indexPath.row) {
+        case 0:
+            [ZHHHelper nxm_make_need_update:^{
+                
+            }];
+            break;
         case 1:
             [ZHHHelper nxm_make_exit];
             break;

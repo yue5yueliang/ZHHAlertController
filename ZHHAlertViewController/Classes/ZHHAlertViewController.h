@@ -10,24 +10,24 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ZHHAlertControllerDelegate;
+@protocol ZHHAlertViewControllerDelegate;
 
-typedef NS_ENUM(NSInteger, ZHHAlertControllerAnimationType) {
-    ZHHAlertControllerAnimationTypeNone        = 0,  // 无动画
-    ZHHAlertControllerAnimationTypeDefault     = 1,  // 默认动画
-    ZHHAlertControllerAnimationTypeFadeIn      = 2,  // 淡入动画
-    ZHHAlertControllerAnimationTypeFadeOut     = 3,  // 淡出动画
-    ZHHAlertControllerAnimationTypeFlyTop      = 4,  // 从顶部飞入
-    ZHHAlertControllerAnimationTypeFlyBottom   = 5,  // 从底部飞入
-    ZHHAlertControllerAnimationTypeFlyLeft     = 6,  // 从左侧飞入
-    ZHHAlertControllerAnimationTypeFlyRight    = 7,  // 从右侧飞入
-    ZHHAlertControllerAnimationTypeZoomIn      = 8,  // 缩放进入
-    ZHHAlertControllerAnimationTypeZoomOut     = 9   // 缩放退出
+typedef NS_ENUM(NSInteger, ZHHAlertViewAnimationType) {
+    ZHHAlertViewAnimationTypeNone        = 0,  // 无动画
+    ZHHAlertViewAnimationTypeDefault     = 1,  // 默认动画
+    ZHHAlertViewAnimationTypeFadeIn      = 2,  // 淡入动画
+    ZHHAlertViewAnimationTypeFadeOut     = 3,  // 淡出动画
+    ZHHAlertViewAnimationTypeFlyTop      = 4,  // 从顶部飞入
+    ZHHAlertViewAnimationTypeFlyBottom   = 5,  // 从底部飞入
+    ZHHAlertViewAnimationTypeFlyLeft     = 6,  // 从左侧飞入
+    ZHHAlertViewAnimationTypeFlyRight    = 7,  // 从右侧飞入
+    ZHHAlertViewAnimationTypeZoomIn      = 8,  // 缩放进入
+    ZHHAlertViewAnimationTypeZoomOut     = 9   // 缩放退出
 };
 
-typedef void (^ZHHAlertControllerBlock)(void);
+typedef void (^ZHHAlertViewControllerBlock)(void);
 
-@interface ZHHAlertController : UIView
+@interface ZHHAlertViewController : UIView
 
 #pragma mark - 公共属性
 
@@ -43,14 +43,14 @@ typedef void (^ZHHAlertControllerBlock)(void);
 @property (nonatomic, strong) UIButton *cancelButton; // 默认蓝色，系统字体 16
 @property (nonatomic, strong) UIButton *otherButton; // 默认蓝色，系统字体 16
 @property (nonatomic, strong) UILabel *titleLabel; // 默认黑色，系统粗体 16
-@property (nonatomic, strong) UILabel *messageLabel; // 默认灰色，系统字体 14
+@property (nonatomic, strong) UILabel *contentLabel; // 默认灰色，系统字体 14
 
 // 设置按钮高度及元素的间距。消息标签的高度根据其文本和字体计算。
 @property (nonatomic, assign) CGFloat buttonHeight; // 默认 44
 @property (nonatomic, assign) CGFloat titleTopPadding; // 默认 14
 @property (nonatomic, assign) CGFloat titleBottomPadding; // 默认 2
-@property (nonatomic, assign) CGFloat messageBottomPadding; // 默认 20
-@property (nonatomic, assign) CGFloat messageLeftRightPadding; // 默认 20
+@property (nonatomic, assign) CGFloat contentBottomPadding; // 默认 20
+@property (nonatomic, assign) CGFloat contentLeftRightPadding; // 默认 20
 
 // 自定义背景和边框
 @property (nonatomic, strong) UIColor *borderColor; // 默认无边框
@@ -64,8 +64,8 @@ typedef void (^ZHHAlertControllerBlock)(void);
 @property (nonatomic, strong) UIColor *separatorColor; // 默认与 UIAlertView 相同
 
 // 自定义出现和消失的动画
-@property (nonatomic, assign) ZHHAlertControllerAnimationType appearAnimationType;
-@property (nonatomic, assign) ZHHAlertControllerAnimationType disappearAnimationType;
+@property (nonatomic, assign) ZHHAlertViewAnimationType appearAnimationType;
+@property (nonatomic, assign) ZHHAlertViewAnimationType disappearAnimationType;
 @property (nonatomic, assign) NSTimeInterval appearTime; // 默认 0.2
 @property (nonatomic, assign) NSTimeInterval disappearTime; // 默认 0.1
 
@@ -91,31 +91,31 @@ typedef void (^ZHHAlertControllerBlock)(void);
 @property (nonatomic, assign) CGFloat dimAlpha; // 默认与 UIAlertView 相同
 
 // 委托
-@property (nonatomic, weak) id<ZHHAlertControllerDelegate> delegate;
+@property (nonatomic, weak) id<ZHHAlertViewControllerDelegate> delegate;
 
 // 按钮点击事件处理
-@property (readwrite, copy) ZHHAlertControllerBlock cancelButtonAction;
-@property (readwrite, copy) ZHHAlertControllerBlock otherButtonAction;
+@property (readwrite, copy) ZHHAlertViewControllerBlock cancelButtonAction;
+@property (readwrite, copy) ZHHAlertViewControllerBlock otherButtonAction;
 
 #pragma mark - 公共方法
 
 // 初始化方法，类似 UIAlertView
 // 当前版本的 Alert 不支持多个其他按钮
 // 如果标题传 nil，Alert 将无标题。如果其他按钮标题传 nil，Alert 将仅有取消按钮。将所有按钮标题设置为 nil 可移除所有按钮。
-- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSString *_Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+- (instancetype)initWithTitle:(NSString * _Nullable)title content:(NSString * _Nullable)content delegate:(id)delegate cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSString *_Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
 // 初始化便捷方法
 // 如果标题传 nil，Alert 将无标题。如果其他按钮标题传 nil，Alert 将仅有取消按钮。将所有按钮标题设置为 nil 可移除所有按钮。
-- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle;
+- (instancetype)initWithTitle:(NSString * _Nullable)title content:(NSString * _Nullable)content cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle;
 
 // 使用此方法替代直接设置属性:
-// @property (readwrite, copy) ZHHAlertControllerBlock cancelButtonAction;
-// @property (readwrite, copy) ZHHAlertControllerBlock otherButtonAction;
+// @property (readwrite, copy) ZHHAlertViewControllerBlock cancelButtonAction;
+// @property (readwrite, copy) ZHHAlertViewControllerBlock otherButtonAction;
 - (void)actionWithBlocksCancelButtonHandler:(void (^)(void))cancelHandler otherButtonHandler:(void (^)(void))otherHandler;
 
 // 在指定视图中显示
 // 如果未设置 customFrame，Alert 将显示在视图中心
-- (void)showInView:(UIView *)view;
+- (void)showInView:(UIView * _Nonnull)view;
 
 // 在窗口中显示
 // 如果未设置 customFrame，Alert 将显示在窗口中心
@@ -126,15 +126,15 @@ typedef void (^ZHHAlertControllerBlock)(void);
 
 @end
 
-// ZHHAlertControllerDelegate 协议
-@protocol ZHHAlertControllerDelegate <NSObject>
+// ZHHAlertViewControllerDelegate 协议
+@protocol ZHHAlertViewControllerDelegate <NSObject>
 
 @optional
-- (void)willAppearAlertView:(ZHHAlertController *)alertView;
-- (void)didAppearAlertView:(ZHHAlertController *)alertView;
+- (void)willAppearAlertView:(ZHHAlertViewController *)alertView;
+- (void)didAppearAlertView:(ZHHAlertViewController *)alertView;
 
-- (void)cancelButtonClickedOnAlertView:(ZHHAlertController *)alertView;
-- (void)otherButtonClickedOnAlertView:(ZHHAlertController *)alertView;
+- (void)cancelButtonClickedOnAlertView:(ZHHAlertViewController *)alertView;
+- (void)otherButtonClickedOnAlertView:(ZHHAlertViewController *)alertView;
 
 @end
 

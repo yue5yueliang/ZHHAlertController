@@ -7,8 +7,38 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <ZHHAnneKit/ZHHUIKit.h>
+#import <ZHHAlertViewController/ZHHAlertViewController.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+@interface ZHHPopupModel : NSObject
+@property (nonatomic,copy)NSString *title;
+@property (nonatomic,copy)NSString *content;
+@property (nonatomic,copy)NSString *cancelButtonTitle;
+@property (nonatomic,copy)NSString *otherButtonTitles;
+@property (nonatomic,assign)BOOL isExitBtn;
+@property (nonatomic,assign)BOOL isSingleBtn;
+@end
+
+@interface UIColor (ZHHColors)
+/// 标题文字颜色
++ (instancetype)zhh_titleColor;
+/// 副标题文字颜色
++ (instancetype)zhh_subtitleColor;
+/// 正文字颜色
++ (instancetype)zhh_contentColor;
+/// 颜色#F55B63 rgba(245, 91, 99, 1)
++ (instancetype)zhh_textColorF55B63;
+/// 按钮普通颜色
++ (instancetype)zhh_enableBtnColor;
+/// 按钮选中颜色
++ (instancetype)zhh_disabledBtnColor;
+/// 按钮高亮颜色
++ (instancetype)zhh_highlightBtnColor;
+/// 颜色#F8F7F7
++ (instancetype)zhh_textColorF8F7F7;
+@end
 
 @interface ZHHHelper : NSObject
 /// 普通短文本提示
@@ -32,6 +62,8 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)nxm_make_fade_in;
 /// 左进右出
 + (void)nxm_make_from_left;
++ (void)nxm_make_need_update:(void (^)(void))completionBlock;
++ (ZHHAlertViewController *)popupController:(ZHHPopupModel *)model;
 @end
 
 NS_ASSUME_NONNULL_END

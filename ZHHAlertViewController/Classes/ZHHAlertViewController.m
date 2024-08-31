@@ -12,10 +12,10 @@
 #define DEFAULT_ALERT_HEIGHT 156
 #define DEFAULT_TITLE_HEIGHT 20
 
-@interface ZHHAlertController () <UIScrollViewDelegate> {
+@interface ZHHAlertViewController () <UIScrollViewDelegate> {
     // 用于保存标题、消息、取消按钮和其他按钮的框架
     CGRect titleLabelFrame;
-    CGRect messageLabelFrame;
+    CGRect contentLabelFrame;
     CGRect cancelButtonFrame;
     CGRect otherButtonFrame;
     
@@ -40,7 +40,7 @@
 
 // 弹窗的标题和消息文本
 @property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *message;
+@property (nonatomic, strong) NSString *content;
 
 // 取消按钮和其他按钮的标题
 @property (nonatomic, strong) NSString *cancelButtonTitle;
@@ -62,7 +62,7 @@
 
 @end
 
-@implementation ZHHAlertController
+@implementation ZHHAlertViewController
 
 // 自定义弹窗控制器类
 
@@ -75,7 +75,7 @@
 }
 
 // 初始化方法，支持传递多个按钮标题
-- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSString * _Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION {
+- (instancetype)initWithTitle:(NSString *)title content:(NSString *)content delegate:(id)delegate cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSString * _Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION {
     NSString *firstOtherButtonTitle;
 
     // 使用可变参数列表获取其他按钮标题
@@ -90,7 +90,7 @@
     va_end(args);
     
     // 初始化弹窗控制器并设置代理
-    if ([self initWithTitle:title message:message cancelButtonTitle:cancelButtonTitle otherButtonTitle:otherButtonTitles]) {
+    if ([self initWithTitle:title content:content cancelButtonTitle:cancelButtonTitle otherButtonTitle:otherButtonTitles]) {
         self.delegate = delegate;
         return self;
     }
@@ -99,7 +99,7 @@
 }
 
 // 初始化方法，设置基本属性
-- (instancetype)initWithTitle:(NSString *)title message:(NSString *)message cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle {
+- (instancetype)initWithTitle:(NSString * _Nullable)title content:(NSString * _Nullable)content cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle {
     self.width = DEFAULT_ALERT_WIDTH;
     self.height = DEFAULT_ALERT_HEIGHT;
     
@@ -108,13 +108,13 @@
         // 初始化代码
         self.clipsToBounds = YES;
         self.title = title;
-        self.message = message;
+        self.content = content;
         self.cancelButtonTitle = cancelButtonTitle;
         self.otherButtonTitle = otherButtonTitle;
         
         // 设置默认动画类型
-        self.appearAnimationType = ZHHAlertControllerAnimationTypeDefault;
-        self.disappearAnimationType = ZHHAlertControllerAnimationTypeDefault;
+        self.appearAnimationType = ZHHAlertViewAnimationTypeDefault;
+        self.disappearAnimationType = ZHHAlertViewAnimationTypeDefault;
         self.cornerRadius = 8; // 圆角半径
         self.buttonClickedHighlight = YES; // 按钮点击时高亮
         
@@ -123,8 +123,8 @@
         self.titleTopPadding = 14;
         self.titleHeight = DEFAULT_TITLE_HEIGHT;
         self.titleBottomPadding = 2;
-        self.messageBottomPadding = 20;
-        self.messageLeftRightPadding = 20;
+        self.contentBottomPadding = 20;
+        self.contentLeftRightPadding = 20;
         
         self.shouldDimBackgroundWhenShowInWindow = YES; // 是否显示背景变暗效果
         self.shouldDismissOnActionButtonClicked = YES; // 点击按钮后是否自动消失
@@ -139,7 +139,7 @@
 #pragma mark - 显示弹窗视图
 
 // 在指定视图中显示弹窗
-- (void)showInView:(UIView *)view {
+- (void)showInView:(UIView *_Nonnull)view {
     [self calculateFrame]; // 计算视图的布局框架
     [self setupViews]; // 设置视图元素
     
@@ -202,7 +202,7 @@
     [view addSubview:self]; // 将弹窗视图添加到指定视图中
     
     // 根据不同的动画类型执行对应的显示动画
-    if (self.appearAnimationType == ZHHAlertControllerAnimationTypeDefault) {
+    if (self.appearAnimationType == ZHHAlertViewAnimationTypeDefault) {
         // 默认动画：从1.1倍缩放到原始大小，并逐渐显示
         self.transform = CGAffineTransformMakeScale(1.1, 1.1);
         self.alpha = 0.6;
@@ -212,7 +212,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView]; // 动画完成后的回调
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeZoomIn) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeZoomIn) {
         // 缩放动画：从0.01倍缩放到原始大小
         self.transform = CGAffineTransformMakeScale(0.01, 0.01);
         [UIView animateWithDuration:timeAppear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -220,7 +220,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView];
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeFadeIn) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeFadeIn) {
         // 渐隐动画：从完全透明到不透明
         self.alpha = 0;
         [UIView animateWithDuration:timeAppear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -228,7 +228,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView];
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeFlyTop) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeFlyTop) {
         // 从顶部飞入动画
         CGRect tmpFrame = self.frame;
         self.frame = CGRectMake(self.frame.origin.x, -self.frame.size.height - 10, self.frame.size.width, self.frame.size.height);
@@ -237,7 +237,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView];
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeFlyBottom) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeFlyBottom) {
         // 从底部飞入动画
         CGRect tmpFrame = self.frame;
         self.frame = CGRectMake(self.frame.origin.x, view.frame.size.height + 10, self.frame.size.width, self.frame.size.height);
@@ -246,7 +246,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView];
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeFlyLeft) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeFlyLeft) {
         // 从左侧飞入动画
         CGRect tmpFrame = self.frame;
         self.frame = CGRectMake(-self.frame.size.width - 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
@@ -255,7 +255,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView];
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeFlyRight) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeFlyRight) {
         // 从右侧飞入动画
         CGRect tmpFrame = self.frame;
         self.frame = CGRectMake(view.frame.size.width + 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
@@ -264,7 +264,7 @@
         } completion:^(BOOL finished){
             [self didAppearAlertView];
         }];
-    } else if (self.appearAnimationType == ZHHAlertControllerAnimationTypeNone) {
+    } else if (self.appearAnimationType == ZHHAlertViewAnimationTypeNone) {
         // 无动画，直接显示视图
         [self didAppearAlertView];
     }
@@ -276,7 +276,7 @@
     NSTimeInterval timeDelay = 0.02; // 动画延迟时间，默认0.02秒
 
     // 根据不同的动画类型执行对应的消失动画
-    if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeDefault) {
+    if (self.disappearAnimationType == ZHHAlertViewAnimationTypeDefault) {
         // 默认动画：逐渐淡出
         self.transform = CGAffineTransformIdentity;
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -284,7 +284,7 @@
         } completion:^(BOOL finished){
             [self removeFromSuperview]; // 动画完成后移除视图
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeZoomOut) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeZoomOut) {
         // 缩放动画：从原始大小缩小到0.01倍
         self.transform = CGAffineTransformIdentity;
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -292,7 +292,7 @@
         } completion:^(BOOL finished){
             [self removeFromSuperview];
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeFadeOut) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeFadeOut) {
         // 渐隐动画：从完全不透明到透明
         self.alpha = 1;
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -300,35 +300,35 @@
         } completion:^(BOOL finished){
             [self removeFromSuperview];
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeFlyTop) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeFlyTop) {
         // 向上飞出动画
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.frame = CGRectMake(self.frame.origin.x, -self.frame.size.height - 10, self.frame.size.width, self.frame.size.height);
         } completion:^(BOOL finished){
             [self removeFromSuperview];
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeFlyBottom) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeFlyBottom) {
         // 向下飞出动画
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.frame = CGRectMake(self.frame.origin.x, self.superview.frame.size.height + 10, self.frame.size.width, self.frame.size.height);
         } completion:^(BOOL finished){
             [self removeFromSuperview];
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeFlyLeft) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeFlyLeft) {
         // 向左飞出动画
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.frame = CGRectMake(-self.frame.size.width - 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
         } completion:^(BOOL finished){
             [self removeFromSuperview];
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeFlyRight) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeFlyRight) {
         // 向右飞出动画
         [UIView animateWithDuration:timeDisappear delay:timeDelay options:UIViewAnimationOptionCurveEaseOut animations:^{
             self.frame = CGRectMake(self.superview.frame.size.width + 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
         } completion:^(BOOL finished){
             [self removeFromSuperview];
         }];
-    } else if (self.disappearAnimationType == ZHHAlertControllerAnimationTypeNone) {
+    } else if (self.disappearAnimationType == ZHHAlertViewAnimationTypeNone) {
         // 无动画，直接移除视图
         [self removeFromSuperview];
     }
@@ -346,7 +346,7 @@
 #pragma mark - 设置 Alert View
 
 - (void)setContentView:(UIView *)contentView {
-    if (!self.title && !self.message) {
+    if (!self.title && !self.content) {
         self.buttonHeight = 0;
     }
     self.alertContentView = contentView;
@@ -386,31 +386,31 @@
     if (!hasContentView) {
         if (!hasModifiedFrame) {
             UIFont *titleFont = self.titleLabel.font ? self.titleLabel.font : [UIFont systemFontOfSize:14];
-            UIFont *messageFont = self.messageLabel.font ? self.messageLabel.font : [UIFont systemFontOfSize:14];
+            UIFont *contentFont = self.contentLabel.font ? self.contentLabel.font : [UIFont systemFontOfSize:14];
             
-            CGSize maximumLabelSize = CGSizeMake(self.width - self.messageLeftRightPadding * 2, FLT_MAX);
+            CGSize maximumLabelSize = CGSizeMake(self.width - self.contentLeftRightPadding * 2, FLT_MAX);
             
             CGRect titleRect = [self.title boundingRectWithSize:maximumLabelSize
                                                         options:NSStringDrawingUsesLineFragmentOrigin
                                                      attributes:@{NSFontAttributeName: titleFont}
                                                         context:nil];
             
-            CGRect textRect = [self.message boundingRectWithSize:maximumLabelSize
+            CGRect textRect = [self.content boundingRectWithSize:maximumLabelSize
                                                         options:NSStringDrawingUsesLineFragmentOrigin
-                                                     attributes:@{NSFontAttributeName: messageFont}
+                                                     attributes:@{NSFontAttributeName: contentFont}
                                                         context:nil];
             
             CGFloat titleHeight = titleRect.size.height + 16;
             self.titleHeight = titleHeight > DEFAULT_TITLE_HEIGHT ? titleHeight : DEFAULT_TITLE_HEIGHT;
-            CGFloat messageHeight = textRect.size.height;
+            CGFloat contentHeight = textRect.size.height;
             
-            CGFloat newHeight = messageHeight + self.titleHeight + self.buttonHeight + self.titleTopPadding + self.titleBottomPadding + self.messageBottomPadding;
+            CGFloat newHeight = contentHeight + self.titleHeight + self.buttonHeight + self.titleTopPadding + self.titleBottomPadding + self.contentBottomPadding;
             self.height = newHeight;
             
             CGFloat mainHeight = [UIScreen mainScreen].bounds.size.height;
             CGFloat maxHeight = mainHeight / 3 * 1.5;
             if (newHeight > maxHeight) {
-                self.height = maxHeight + self.titleHeight + self.buttonHeight + self.titleTopPadding + self.titleBottomPadding + self.messageBottomPadding;
+                self.height = maxHeight + self.titleHeight + self.buttonHeight + self.titleTopPadding + self.titleBottomPadding + self.contentBottomPadding;
             }
             self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.height);
         }
@@ -419,31 +419,31 @@
         if (!self.title) {
             titleLabelFrame = CGRectZero;
         } else {
-            if (!self.message || self.message.length == 0) {
+            if (!self.content || self.content.length == 0) {
                 self.titleHeight = 61;
             }
-            titleLabelFrame = CGRectMake(self.messageLeftRightPadding,
+            titleLabelFrame = CGRectMake(self.contentLeftRightPadding,
                                          self.titleTopPadding,
-                                         self.width - self.messageLeftRightPadding * 2,
+                                         self.width - self.contentLeftRightPadding * 2,
                                          self.titleHeight);
         }
         
-        if (!self.message) {
-            messageLabelFrame = CGRectZero;
-        } else if (hasButton) {
-            messageLabelFrame = CGRectMake(self.messageLeftRightPadding,
-                                           titleLabelFrame.origin.y + titleLabelFrame.size.height + self.titleBottomPadding,
-                                           self.width - self.messageLeftRightPadding * 2,
-                                           self.height - self.buttonHeight - titleLabelFrame.size.height - self.titleTopPadding - self.titleBottomPadding);
+        if (!self.content) {
+            contentLabelFrame = CGRectZero;
         } else {
-            messageLabelFrame = CGRectMake(self.messageLeftRightPadding,
-                                           titleLabelFrame.origin.y + titleLabelFrame.size.height + self.titleBottomPadding,
-                                           self.width - self.messageLeftRightPadding * 2,
-                                           self.height - titleLabelFrame.size.height - self.titleTopPadding - self.titleBottomPadding);
+            CGFloat titleMaxY = CGRectGetMaxY(titleLabelFrame); // 获取标题标签的最大Y值
+            CGFloat contentWidth = self.width - 2 * self.contentLeftRightPadding; // 计算内容宽度
+            CGFloat contentHeight = self.height - titleLabelFrame.size.height - self.titleTopPadding - self.titleBottomPadding; // 计算基本的内容高度
+
+            if (hasButton) {
+                contentHeight -= self.buttonHeight; // 如果有按钮，减去按钮的高度
+            }
+
+            contentLabelFrame = CGRectMake(self.contentLeftRightPadding, titleMaxY + self.titleBottomPadding, contentWidth, contentHeight);
         }
         
         if (!self.title || self.title.length == 0) {
-            messageLabelFrame = CGRectMake(self.messageLeftRightPadding, 0, self.width - self.messageLeftRightPadding * 2, self.height - self.buttonHeight);
+            contentLabelFrame = CGRectMake(self.contentLeftRightPadding, 0, self.width - self.contentLeftRightPadding * 2, self.height - self.buttonHeight);
         }
     }
     
@@ -452,7 +452,7 @@
         verticalSeparatorFrame = CGRectZero;
         horizontalSeparatorFrame = CGRectZero;
     } else {
-        verticalSeparatorFrame = CGRectMake(self.width / 2, self.height - self.buttonHeight, 0.5, self.buttonHeight);
+        verticalSeparatorFrame = CGRectMake((self.width-0.5) / 2, self.height - self.buttonHeight, 0.5, self.buttonHeight);
         horizontalSeparatorFrame = CGRectMake(0, self.height - self.buttonHeight, self.width, 0.5);
     }
     
@@ -511,7 +511,7 @@
 - (void)setupItems {
     // 初始化各个UI组件
     self.titleLabel = [[UILabel alloc] initWithFrame:CGRectZero]; // 标题标签
-    self.messageLabel = [[UILabel alloc] initWithFrame:CGRectZero]; // 消息标签
+    self.contentLabel = [[UILabel alloc] initWithFrame:CGRectZero]; // 消息标签
     self.cancelButton = [UIButton buttonWithType:UIButtonTypeCustom]; // 取消按钮
     self.otherButton = [UIButton buttonWithType:UIButtonTypeCustom]; // 其他按钮
     self.scrollView = [[UIScrollView alloc] init]; // 滚动视图
@@ -534,23 +534,23 @@
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 
     // 设置消息标签
-    self.messageLabel.numberOfLines = 0;
-    self.messageLabel.font = [UIFont systemFontOfSize:13];
+    self.contentLabel.numberOfLines = 0;
+    self.contentLabel.font = [UIFont systemFontOfSize:13];
     if (!self.title) {
-        self.messageLabel.font = self.titleLabel.font;
+        self.contentLabel.font = self.titleLabel.font;
     }
-    self.messageLabel.text = self.message;
-    self.messageLabel.textAlignment = NSTextAlignmentCenter;
-    self.messageLabel.textColor = [UIColor blackColor];
-    self.messageLabel.backgroundColor = [UIColor clearColor];
+    self.contentLabel.text = self.content;
+    self.contentLabel.textAlignment = NSTextAlignmentCenter;
+    self.contentLabel.textColor = [UIColor blackColor];
+    self.contentLabel.backgroundColor = [UIColor clearColor];
 
     // 设置取消按钮
     self.cancelButton.backgroundColor = [UIColor clearColor];
     [self.cancelButton setTitleColor:[UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
     self.cancelButton.titleLabel.font = [UIFont systemFontOfSize:17];
     [self.cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    UIImage *image = [UIImage imageNamed:@"divider_highlighted.png" inBundle:bundle compatibleWithTraitCollection:nil];
+    
+    UIImage *image = [self zhh_imageNamed:@"divider_highlighted"];
     [self.cancelButton setBackgroundImage:image forState:UIControlStateHighlighted];
     [self.cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -565,6 +565,12 @@
     // 设置分割线
     self.horizontalSeparator = [[UIView alloc] initWithFrame:CGRectZero]; // 水平分割线
     self.verticalSeparator = [[UIView alloc] initWithFrame:CGRectZero]; // 垂直分割线
+}
+
+- (UIImage *)zhh_imageNamed:(NSString *)imageName {
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    UIImage *image = [UIImage imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil];
+    return image;
 }
 
 - (void)setupViews {
@@ -596,7 +602,7 @@
     
     // 设置各个组件的布局框架
     self.titleLabel.frame = titleLabelFrame;
-    self.messageLabel.frame = messageLabelFrame;
+    self.contentLabel.frame = contentLabelFrame;
     self.cancelButton.frame = cancelButtonFrame;
     self.otherButton.frame = otherButtonFrame;
     
@@ -609,14 +615,20 @@
         self.verticalSeparator.backgroundColor = self.separatorColor;
     } else {
         // 使用默认的分割线颜色
-        self.horizontalSeparator.backgroundColor = [UIColor colorWithRed:196.0/255 green:196.0/255 blue:201.0/255 alpha:1.0];
-        self.verticalSeparator.backgroundColor = [UIColor colorWithRed:196.0/255 green:196.0/255 blue:201.0/255 alpha:1.0];
+        if (@available(iOS 13.0, *)) {
+            self.horizontalSeparator.backgroundColor = [UIColor separatorColor];
+            self.verticalSeparator.backgroundColor = [UIColor separatorColor];
+        } else {
+            // Fallback on earlier versions
+            self.horizontalSeparator.backgroundColor = [UIColor colorWithRed:60.0/255 green:60.0/255 blue:67.0/255 alpha:0.29];
+            self.verticalSeparator.backgroundColor = [UIColor colorWithRed:60.0/255 green:60.0/255 blue:67.0/255 alpha:0.29];
+        }
     }
     
     // 根据标题调整消息标签的大小，使其适应边界
     if (self.title) {
-        [self.messageLabel sizeToFit];
-        CGRect myFrame = self.messageLabel.frame;
+        [self.contentLabel sizeToFit];
+        CGRect myFrame = self.contentLabel.frame;
         CGFloat mainHeight = [UIScreen mainScreen].bounds.size.height;
         /// 最大高度
         CGFloat maxHeight = mainHeight/3*1.5;
@@ -627,17 +639,17 @@
             maxHeight = myFrame.size.height;
             self.scrollView.scrollEnabled = NO; // 内容未超过最大高度，禁用滚动
         }
-        myFrame = CGRectMake(myFrame.origin.x, myFrame.origin.y, self.width -  2 * self.messageLeftRightPadding, maxHeight);
+        myFrame = CGRectMake(myFrame.origin.x, myFrame.origin.y, self.width -  2 * self.contentLeftRightPadding, maxHeight - 10);
         self.scrollView.frame = myFrame;
-        self.scrollView.contentSize = CGSizeMake(myFrame.origin.x, self.messageLabel.frame.size.height + 1);
-        self.messageLabel.frame = CGRectMake(0, 0, myFrame.size.width, self.messageLabel.frame.size.height);
+        self.scrollView.contentSize = CGSizeMake(myFrame.origin.x, self.contentLabel.frame.size.height + 1);
+        self.contentLabel.frame = CGRectMake(0, 0, myFrame.size.width, self.contentLabel.frame.size.height);
     }
     
     // 添加子视图
     if (!hasContentView) {
         [self addSubview:self.titleLabel];
         [self addSubview:self.scrollView];
-        [self.scrollView addSubview:self.messageLabel];
+        [self.scrollView addSubview:self.contentLabel];
     }
     
     [self addSubview:self.cancelButton];

@@ -7,12 +7,19 @@
 //
 
 #import "ZHHAppDelegate.h"
+#import "ZHHViewController.h"
 
 @implementation ZHHAppDelegate
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions{
     // Override point for customization after application launch.
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    [self.window makeKeyAndVisible];
+    ZHHViewController *childVC = [[ZHHViewController alloc] init];
+    UINavigationController *navigation = [[UINavigationController alloc] initWithRootViewController:childVC];
+    [UINavigationBar appearance].tintColor = UIColor.whiteColor;
+    self.window.rootViewController = navigation;
+    
     return YES;
 }
 

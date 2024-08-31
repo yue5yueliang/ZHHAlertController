@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '10.0'
+
+target 'ZHHAlertViewController_Example' do
+  pod 'ZHHAlertViewController', :path => '../'
+
+  target 'ZHHAlertViewController_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

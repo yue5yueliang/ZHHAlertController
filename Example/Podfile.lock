@@ -1,0 +1,16 @@
+PODS:
+  - ZHHAlertViewController (0.1.0)
+
+DEPENDENCIES:
+  - ZHHAlertViewController (from `../`)
+
+EXTERNAL SOURCES:
+  ZHHAlertViewController:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  ZHHAlertViewController: 969807faf3bd3d12ff8bcbb0284e76cc8fb0ba14
+
+PODFILE CHECKSUM: f304b88f120af414fb73d882c5bba68265810c2b
+
+COCOAPODS: 1.11.2

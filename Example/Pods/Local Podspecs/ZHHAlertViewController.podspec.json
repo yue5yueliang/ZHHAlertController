@@ -1,0 +1,27 @@
+{
+  "name": "ZHHAlertViewController",
+  "version": "0.1.0",
+  "summary": "A short description of ZHHAlertViewController.",
+  "description": "TODO: Add long description of the pod here.",
+  "homepage": "https://github.com/ningxiaomo/ZHHAlertViewController",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "宁小陌y": "136769890@qq.com"
+  },
+  "source": {
+    "git": "https://github.com/ningxiaomo/ZHHAlertViewController.git",
+    "tag": "0.1.0"
+  },
+  "platforms": {
+    "ios": "10.0"
+  },
+  "source_files": "ZHHAlertViewController/Classes/**/*",
+  "resource_bundles": {
+    "ZHHAlertViewController": [
+      "ZHHAlertViewController/Assets/*.png"
+    ]
+  }
+}

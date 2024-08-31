@@ -1,0 +1,6 @@
+framework module Pods_ZHHAlertViewController_Example {
+  umbrella header "Pods-ZHHAlertViewController_Example-umbrella.h"
+
+  export *
+  module * { export * }
+}

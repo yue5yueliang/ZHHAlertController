@@ -633,13 +633,13 @@
         /// 最大高度
         CGFloat maxHeight = mainHeight/3*1.5;
         if (myFrame.size.height > maxHeight) {
-            maxHeight = maxHeight;
+            maxHeight = maxHeight - 10;
             self.scrollView.scrollEnabled = YES; // 当内容超过最大高度时，开启滚动功能
         } else {
-            maxHeight = myFrame.size.height;
+            maxHeight = self.contentLabel.frame.size.height;
             self.scrollView.scrollEnabled = NO; // 内容未超过最大高度，禁用滚动
         }
-        myFrame = CGRectMake(myFrame.origin.x, myFrame.origin.y, self.width -  2 * self.contentLeftRightPadding, maxHeight - 10);
+        myFrame = CGRectMake(myFrame.origin.x, myFrame.origin.y, self.width -  2 * self.contentLeftRightPadding, maxHeight);
         self.scrollView.frame = myFrame;
         self.scrollView.contentSize = CGSizeMake(myFrame.origin.x, self.contentLabel.frame.size.height + 1);
         self.contentLabel.frame = CGRectMake(0, 0, myFrame.size.width, self.contentLabel.frame.size.height);

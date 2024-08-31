@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
                        DESC
 
   # 项目的主页地址，这里可以直接写远程仓库主页地址
-  s.homepage         = 'https://gitee.com/ningxiaomo/ZHHAlertViewController'
+  s.homepage         = 'https://github.com/yue5yueliang/ZHHAlertViewController'
   
   # 截图（可选）
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.author           = { '宁小陌y' => '136769890@qq.com' }
   
   # Git 仓库地址及版本号，版本号直接使用 s.version
-  s.source           = { :git => 'https://gitee.com/ningxiaomo/ZHHAlertViewController.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/yue5yueliang/ZHHAlertViewController.git', :tag => s.version.to_s }
   
   # 多媒体介绍地址（可选）
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'

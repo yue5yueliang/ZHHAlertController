@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZHHAlertViewController'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'ZHHAlertViewController 是 UIKit 的 UIAlertView 的最佳替代方案'
 
   # 项目的详细描述信息，注意这里的文字长度要比 s.summary 长，否则会被认为格式不合格

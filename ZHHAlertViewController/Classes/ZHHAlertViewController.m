@@ -136,6 +136,16 @@
     return self;
 }
 
+- (UIWindow *)keyWindow {
+    for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
+        if (scene.activationState == UISceneActivationStateForegroundActive &&
+            [scene isKindOfClass:[UIWindowScene class]]) {
+            return scene.windows.firstObject;
+        }
+    }
+    return nil;
+}
+
 #pragma mark - 显示弹窗视图
 
 // 在指定视图中显示弹窗
@@ -149,12 +159,11 @@
                                 (view.frame.size.height - self.frame.size.height) / 2,
                                 self.frame.size.width, self.frame.size.height);
     }
-    UIView *window = [[[UIApplication sharedApplication] delegate] window];
 
     // 如果需要在指定视图中显示背景变暗效果
-    if (self.shouldDimBackgroundWhenShowInView && view != window) {
-        UIView *window = [[[UIApplication sharedApplication] delegate] window];
-        self.blackOpaqueView = [[UIView alloc] initWithFrame:window.bounds];
+    if (self.shouldDimBackgroundWhenShowInView && view != self.keyWindow) {
+
+        self.blackOpaqueView = [[UIView alloc] initWithFrame:self.keyWindow.bounds];
         self.blackOpaqueView.backgroundColor = [UIColor colorWithWhite:0 alpha:self.dimAlpha];
         
         // 添加手势识别器，用于处理点击弹窗外部关闭弹窗的操作
@@ -170,21 +179,20 @@
 
 // 在窗口中显示弹窗
 - (void)show {
-    UIView *window = [[[UIApplication sharedApplication] delegate] window];
         
     // 如果需要在窗口中显示背景变暗效果
     if (self.shouldDimBackgroundWhenShowInWindow) {
-        self.blackOpaqueView = [[UIView alloc] initWithFrame:window.bounds];
+        self.blackOpaqueView = [[UIView alloc] initWithFrame:self.keyWindow.bounds];
         self.blackOpaqueView.backgroundColor = [UIColor colorWithWhite:0 alpha:self.dimAlpha];
 
         // 添加手势识别器，用于处理点击弹窗外部关闭弹窗的操作
         UITapGestureRecognizer *outsideTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outsideTap:)];
         [self.blackOpaqueView addGestureRecognizer:outsideTapGesture];
-        [window addSubview:self.blackOpaqueView];
+        [self.keyWindow addSubview:self.blackOpaqueView];
     }
     
     // 在窗口中显示弹窗视图
-    [self showInView:window];
+    [self showInView:self.keyWindow];
 }
 
 // 处理点击弹窗外部的手势事件

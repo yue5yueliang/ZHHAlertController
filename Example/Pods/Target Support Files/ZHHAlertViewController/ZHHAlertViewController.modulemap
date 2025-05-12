@@ -1,6 +1,0 @@
-framework module ZHHAlertViewController {
-  umbrella header "ZHHAlertViewController-umbrella.h"
-
-  export *
-  module * { export * }
-}

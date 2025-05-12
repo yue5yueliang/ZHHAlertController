@@ -34,16 +34,25 @@ Pod::Spec.new do |s|
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
   
   # 支持的平台及版本
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '13.0'
   
-  # 代码原文件地址，/**/* 表示 Classes 目录及其子目录下的所有文件，如果有多个目录用逗号分隔
-  s.source_files = 'ZHHAlertViewController/Classes/**/*'
+  s.default_subspec  = 'Core'
+  s.subspec 'Core' do |core|
+    core.source_files = 'ZHHAlertViewController/Classes/**/*'
+    core.resource = ['ZHHAlertViewController/Assets/*.*']
+#    core.resource_bundles = {
+#        'ZHHAlertViewController' => ['ZHHAlertViewController/Assets/*.png']
+#    }
+  end
   
-  # 资源文件地址
-  s.resources = 'ZHHAlertViewController/Assets/*.png'
-  s.resource_bundles = {
-      'ZHHAlertViewController' => ['ZHHAlertViewController/Assets/*.png']
-  }
+#  # 代码原文件地址，/**/* 表示 Classes 目录及其子目录下的所有文件，如果有多个目录用逗号分隔
+#  s.source_files = 'ZHHAlertViewController/Classes/**/*'
+#  
+#  # 资源文件地址
+#  s.resources = 'ZHHAlertViewController/Assets/*.png'
+#  s.resource_bundles = {
+#      'ZHHAlertViewController' => ['ZHHAlertViewController/Assets/*.png']
+#  }
 
   # 公开头文件地址（可选）
   # s.public_header_files = 'Pod/Classes/**/*.h'

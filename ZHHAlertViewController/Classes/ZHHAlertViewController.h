@@ -13,16 +13,16 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol ZHHAlertViewControllerDelegate;
 
 typedef NS_ENUM(NSInteger, ZHHAlertViewAnimationType) {
-    ZHHAlertViewAnimationTypeNone        = 0,  // 无动画
-    ZHHAlertViewAnimationTypeDefault     = 1,  // 默认动画
-    ZHHAlertViewAnimationTypeFadeIn      = 2,  // 淡入动画
-    ZHHAlertViewAnimationTypeFadeOut     = 3,  // 淡出动画
-    ZHHAlertViewAnimationTypeFlyTop      = 4,  // 从顶部飞入
-    ZHHAlertViewAnimationTypeFlyBottom   = 5,  // 从底部飞入
-    ZHHAlertViewAnimationTypeFlyLeft     = 6,  // 从左侧飞入
-    ZHHAlertViewAnimationTypeFlyRight    = 7,  // 从右侧飞入
-    ZHHAlertViewAnimationTypeZoomIn      = 8,  // 缩放进入
-    ZHHAlertViewAnimationTypeZoomOut     = 9   // 缩放退出
+    ZHHAlertViewAnimationTypeNone        = 0,  ///< 无动画
+    ZHHAlertViewAnimationTypeDefault     = 1,  ///< 默认动画（淡入淡出）
+    ZHHAlertViewAnimationTypeFadeIn      = 2,  ///< 淡入动画
+    ZHHAlertViewAnimationTypeFadeOut     = 3,  ///< 淡出动画
+    ZHHAlertViewAnimationTypeFlyTop      = 4,  ///< 从顶部飞入
+    ZHHAlertViewAnimationTypeFlyBottom   = 5,  ///< 从底部飞入
+    ZHHAlertViewAnimationTypeFlyLeft     = 6,  ///< 从左侧飞入
+    ZHHAlertViewAnimationTypeFlyRight    = 7,  ///< 从右侧飞入
+    ZHHAlertViewAnimationTypeZoomIn      = 8,  ///< 缩放进入
+    ZHHAlertViewAnimationTypeZoomOut     = 9   ///< 缩放退出
 };
 
 typedef void (^ZHHAlertViewControllerBlock)(void);
@@ -31,110 +31,112 @@ typedef void (^ZHHAlertViewControllerBlock)(void);
 
 #pragma mark - 公共属性
 
-// 自定义 Alert View 的显示区域，未设置时，Alert 将显示在视图中心。不要使用默认方法 [UIView setFrame:]
-@property (nonatomic, assign) CGRect customFrame; // 默认与 UIAlertView 相同
+/// 自定义 Alert 显示区域，未设置时默认居中显示。不要直接使用 [UIView setFrame:]。
+@property (nonatomic, assign) CGRect customFrame;
 
-// 设置 Alert View 的内容视图
-// Alert View 的大小会根据内容视图的大小调整，因此无需设置 customFrame。如果不希望 Alert View 显示在中心，只需设置 Alert View 的 center 属性
+/// Alert 的内容视图，大小决定 Alert 尺寸。设置后无需指定 customFrame。
 @property (nonatomic, strong) UIView *contentView;
+
+/// Alert 的滚动容器（只读）
 @property (nonatomic, strong, readonly) UIScrollView *scrollView;
+@property (nonatomic, strong) UIStackView *stackView;   ///< 默认蓝色文字，系统字体 16
 
-// 可获取按钮和标签，以自定义其外观
-@property (nonatomic, strong) UIButton *cancelButton; // 默认蓝色，系统字体 16
-@property (nonatomic, strong) UIButton *otherButton; // 默认蓝色，系统字体 16
-@property (nonatomic, strong) UILabel *titleLabel; // 默认黑色，系统粗体 16
-@property (nonatomic, strong) UILabel *contentLabel; // 默认灰色，系统字体 14
+/// 按钮 & 标签（可自定义样式）
+@property (nonatomic, strong) UIButton *cancelButton;   ///< 默认蓝色文字，系统字体 16
+@property (nonatomic, strong) UIButton *otherButton;    ///< 默认蓝色文字，系统字体 16
+@property (nonatomic, strong) UILabel *titleLabel;      ///< 默认黑色文字，系统粗体 16
+@property (nonatomic, strong) UILabel *contentLabel;    ///< 默认灰色文字，系统字体 14
 
-// 设置按钮高度及元素的间距。消息标签的高度根据其文本和字体计算。
-@property (nonatomic, assign) CGFloat buttonHeight; // 默认 44
-@property (nonatomic, assign) CGFloat titleTopPadding; // 默认 14
-@property (nonatomic, assign) CGFloat titleBottomPadding; // 默认 2
-@property (nonatomic, assign) CGFloat contentBottomPadding; // 默认 20
-@property (nonatomic, assign) CGFloat contentLeftRightPadding; // 默认 20
+/// UI 间距 & 尺寸
+@property (nonatomic, assign) CGFloat buttonHeight;              ///< 默认 44
+@property (nonatomic, assign) CGFloat titleTopPadding;           ///< 默认 14
+@property (nonatomic, assign) CGFloat titleBottomPadding;        ///< 默认 2
+@property (nonatomic, assign) CGFloat contentBottomPadding;      ///< 默认 20
+@property (nonatomic, assign) CGFloat contentLeftRightPadding;   ///< 默认 20
 
-// 自定义背景和边框
-@property (nonatomic, strong) UIColor *borderColor; // 默认无边框
-@property (nonatomic, assign) CGFloat borderWidth; // 默认 0
-@property (nonatomic, assign) CGFloat cornerRadius; // 默认 8
-// 继承自 UIView @property (nonatomic, strong) UIColor *backgroundColor; // 默认与 UIAlertView 相同
-@property (nonatomic, strong) UIImage *backgroundImage; // 默认 nil
+/// 边框 & 圆角 & 背景
+@property (nonatomic, strong) UIColor *borderColor;       ///< 默认无边框
+@property (nonatomic, assign) CGFloat borderWidth;         ///< 默认 0
+@property (nonatomic, assign) CGFloat cornerRadius;        ///< 默认 8
+@property (nonatomic, strong) UIImage *backgroundImage;    ///< 自定义背景图，默认 nil
 
-// 自定义分隔线
-@property (nonatomic, assign) BOOL hideSeperator; // 默认 NO
-@property (nonatomic, strong) UIColor *separatorColor; // 默认与 UIAlertView 相同
+/// 分隔线
+@property (nonatomic, assign) BOOL hideSeperator;          ///< 是否隐藏按钮分隔线，默认 NO
+@property (nonatomic, strong) UIColor *separatorColor;     ///< 分隔线颜色，默认与系统一致
 
-// 自定义出现和消失的动画
-@property (nonatomic, assign) ZHHAlertViewAnimationType appearAnimationType;
-@property (nonatomic, assign) ZHHAlertViewAnimationType disappearAnimationType;
-@property (nonatomic, assign) NSTimeInterval appearTime; // 默认 0.2
-@property (nonatomic, assign) NSTimeInterval disappearTime; // 默认 0.1
+/// 弹窗动画配置
+@property (nonatomic, assign) ZHHAlertViewAnimationType appearAnimationType;      ///< 弹出动画
+@property (nonatomic, assign) ZHHAlertViewAnimationType disappearAnimationType;   ///< 消失动画
+@property (nonatomic, assign) NSTimeInterval appearTime;       ///< 弹出动画时长，默认 0.2
+@property (nonatomic, assign) NSTimeInterval disappearTime;    ///< 消失动画时长，默认 0.1
 
-// 设置为 YES 时，取消按钮会显示在右侧
-@property (nonatomic, assign) BOOL cancelButtonPositionRight; // 默认 NO
+/// UI 行为配置
+@property (nonatomic, assign) BOOL cancelButtonPositionRight;             ///< 是否将取消按钮显示在右侧，默认 NO
+@property (nonatomic, assign) BOOL shouldHighlightButtonOnClick;          ///< 按钮点击是否高亮，默认 YES
+@property (nonatomic, assign) BOOL shouldDismissOnActionButtonClicked;    ///< 点击按钮是否自动关闭 Alert，默认 YES
+@property (nonatomic, assign) BOOL shouldDismissOnOutsideTapped;          ///< 点击外部区域是否关闭 Alert（仅模糊背景生效），默认 NO
 
-// 设置为 NO 时，按钮点击时不会高亮
-@property (nonatomic, assign) BOOL buttonClickedHighlight; // 默认 YES
+/// 模糊背景配置
+@property (nonatomic, assign) BOOL shouldDimBackgroundWhenShowInWindow;   ///< 是否在窗口中启用模糊背景，默认 YES
+@property (nonatomic, assign) BOOL shouldDimBackgroundWhenShowInView;     ///< 是否在视图中禁用模糊背景，默认 NO
+@property (nonatomic, assign) CGFloat dimAlpha;                           ///< 背景透明度，默认 0.2
 
-// 默认情况下，点击其他按钮不会关闭 Alert，设置此属性为 YES 可更改此行为
-@property (nonatomic, assign) BOOL shouldDismissOnActionButtonClicked; // 默认 YES
-
-// 如果此属性为 YES，点击外部区域时将关闭 Alert（仅在启用模糊背景时生效）
-@property (nonatomic, assign) BOOL shouldDismissOnOutsideTapped; // 默认 NO
-
-// 当显示在窗口中时，模糊背景始终启用
-@property (nonatomic, assign) BOOL shouldDimBackgroundWhenShowInWindow; // 默认 YES
-
-// 当显示在视图中时，模糊背景始终禁用
-@property (nonatomic, assign) BOOL shouldDimBackgroundWhenShowInView; // 默认 NO
-
-// 模糊背景的默认颜色为黑色，alpha 为 0.2
-@property (nonatomic, assign) CGFloat dimAlpha; // 默认与 UIAlertView 相同
-
-// 委托
+/// 事件处理
 @property (nonatomic, weak) id<ZHHAlertViewControllerDelegate> delegate;
-
-// 按钮点击事件处理
 @property (readwrite, copy) ZHHAlertViewControllerBlock cancelButtonAction;
 @property (readwrite, copy) ZHHAlertViewControllerBlock otherButtonAction;
 
-#pragma mark - 公共方法
+#pragma mark - 初始化方法
 
-// 初始化方法，类似 UIAlertView
-// 当前版本的 Alert 不支持多个其他按钮
-// 如果标题传 nil，Alert 将无标题。如果其他按钮标题传 nil，Alert 将仅有取消按钮。将所有按钮标题设置为 nil 可移除所有按钮。
-- (instancetype)initWithTitle:(NSString * _Nullable)title content:(NSString * _Nullable)content delegate:(id)delegate cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSString *_Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+/// 标准初始化方法（支持 delegate & 可变按钮）
+- (instancetype)initWithTitle:(NSString * _Nullable)title
+                      content:(NSString * _Nullable)content
+                     delegate:(id)delegate
+           cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle
+           otherButtonTitles:(NSString *_Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
 
-// 初始化便捷方法
-// 如果标题传 nil，Alert 将无标题。如果其他按钮标题传 nil，Alert 将仅有取消按钮。将所有按钮标题设置为 nil 可移除所有按钮。
-- (instancetype)initWithTitle:(NSString * _Nullable)title content:(NSString * _Nullable)content cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle;
+/// 便捷初始化方法
+- (instancetype)initWithTitle:(NSString * _Nullable)title
+                      content:(NSString * _Nullable)content
+           cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle
+            otherButtonTitle:(NSString * _Nullable)otherButtonTitle;
 
-// 使用此方法替代直接设置属性:
-// @property (readwrite, copy) ZHHAlertViewControllerBlock cancelButtonAction;
-// @property (readwrite, copy) ZHHAlertViewControllerBlock otherButtonAction;
-- (void)actionWithBlocksCancelButtonHandler:(void (^)(void))cancelHandler otherButtonHandler:(void (^)(void))otherHandler;
+#pragma mark - 事件绑定方法
 
-// 在指定视图中显示
-// 如果未设置 customFrame，Alert 将显示在视图中心
+/// 使用 block 设置按钮回调（替代属性方式）
+- (void)actionWithBlocksCancelButtonHandler:(void (^)(void))cancelHandler
+                        otherButtonHandler:(void (^)(void))otherHandler;
+
+#pragma mark - 展示与隐藏
+
+/// 显示在指定视图中
 - (void)showInView:(UIView * _Nonnull)view;
 
-// 在窗口中显示
-// 如果未设置 customFrame，Alert 将显示在窗口中心
+/// 显示在当前窗口
 - (void)show;
 
-// 关闭 Alert
+/// 关闭 Alert
 - (void)dismiss;
 
 @end
 
-// ZHHAlertViewControllerDelegate 协议
+#pragma mark - Delegate 协议
+
 @protocol ZHHAlertViewControllerDelegate <NSObject>
 
 @optional
-- (void)willAppearAlertView:(ZHHAlertViewController *)alertView;
-- (void)didAppearAlertView:(ZHHAlertViewController *)alertView;
 
-- (void)cancelButtonClickedOnAlertView:(ZHHAlertViewController *)alertView;
-- (void)otherButtonClickedOnAlertView:(ZHHAlertViewController *)alertView;
+/// Alert 将要显示
+- (void)alertViewWillAppear:(ZHHAlertViewController *)alertView;
+
+/// Alert 已经显示
+- (void)alertViewDidAppear:(ZHHAlertViewController *)alertView;
+
+/// 用户点击了取消按钮
+- (void)alertViewDidClickCancelButton:(ZHHAlertViewController *)alertView;
+
+/// 用户点击了其他按钮
+- (void)alertViewDidClickOtherButton:(ZHHAlertViewController *)alertView;
 
 @end
 

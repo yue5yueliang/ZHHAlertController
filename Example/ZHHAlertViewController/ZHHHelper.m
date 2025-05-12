@@ -215,33 +215,6 @@
                                                                                     delegate:self
                                                                            cancelButtonTitle:model.cancelButtonTitle
                                                                            otherButtonTitles:model.otherButtonTitles,nil];
-    popupController.titleLabel.textColor = UIColor.zhh_titleColor;
-    popupController.titleLabel.font = [UIFont fontWithName:@"Arial-BoldMT" size:17];
-    popupController.contentLabel.textColor = UIColor.zhh_contentColor;
-    popupController.contentLabel.textAlignment = NSTextAlignmentLeft;
-    popupController.contentLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:15];
-    [popupController.otherButton setTitleColor:UIColor.zhh_titleColor forState:UIControlStateNormal];
-    [popupController.cancelButton setTitleColor:UIColor.zhh_titleColor forState:UIControlStateNormal];
-    popupController.otherButton.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium"  size:15];
-    popupController.cancelButton.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium"  size:15];
-    popupController.titleTopPadding = 15;
-    popupController.buttonHeight = 40;
-    popupController.hideSeperator = YES;
-    [popupController show];
-    
-    if (model.isExitBtn) {
-        [popupController.otherButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
-        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_textColorF55B63] forState:UIControlStateNormal];
-        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColorHexRGB(0xF5474F)] forState:UIControlStateHighlighted];
-    }else{
-        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_enableBtnColor] forState:UIControlStateNormal];
-        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_highlightBtnColor] forState:UIControlStateHighlighted];
-    }
-    
-    [popupController.cancelButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_textColorF8F7F7] forState:UIControlStateNormal];
-    [popupController.otherButton zhh_setCornerRadius:8.f];
-    [popupController.cancelButton zhh_setCornerRadius:8.f];
-    
     
     CGFloat width = CGRectGetWidth(popupController.frame);
     CGFloat height = CGRectGetHeight(popupController.frame);
@@ -287,6 +260,33 @@
         popupController.otherButton.zhh_left = popupController.cancelButton.zhh_right + padding;
         popupController.otherButton.zhh_width = buttonW;
     }
+    
+    popupController.titleLabel.textColor = UIColor.zhh_titleColor;
+    popupController.titleLabel.font = [UIFont fontWithName:@"Arial-BoldMT" size:17];
+    popupController.contentLabel.textColor = UIColor.zhh_contentColor;
+    popupController.contentLabel.textAlignment = NSTextAlignmentLeft;
+    popupController.contentLabel.font = [UIFont fontWithName:@"PingFangSC-Regular" size:15];
+    [popupController.otherButton setTitleColor:UIColor.zhh_titleColor forState:UIControlStateNormal];
+    [popupController.cancelButton setTitleColor:UIColor.zhh_titleColor forState:UIControlStateNormal];
+    popupController.otherButton.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium"  size:15];
+    popupController.cancelButton.titleLabel.font = [UIFont fontWithName:@"PingFangSC-Medium"  size:15];
+    popupController.titleTopPadding = 15;
+    popupController.buttonHeight = 40;
+    popupController.hideSeperator = YES;
+    [popupController show];
+    
+    if (model.isExitBtn) {
+        [popupController.otherButton setTitleColor:UIColor.whiteColor forState:UIControlStateNormal];
+        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_textColorF55B63] forState:UIControlStateNormal];
+        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColorHexRGB(0xF5474F)] forState:UIControlStateHighlighted];
+    }else{
+        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_enableBtnColor] forState:UIControlStateNormal];
+        [popupController.otherButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_highlightBtnColor] forState:UIControlStateHighlighted];
+    }
+    
+    [popupController.cancelButton setBackgroundImage:[UIImage zhh_imageWithColor:UIColor.zhh_textColorF8F7F7] forState:UIControlStateNormal];
+    popupController.otherButton.zhh_cornerRadius = 8;
+    popupController.cancelButton.zhh_cornerRadius = 8;
     
     return popupController;
 }

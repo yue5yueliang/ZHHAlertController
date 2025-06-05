@@ -7,7 +7,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZHHAlertViewController'
-  s.version          = '0.1.4'
+  s.version          = '0.1.5'
   s.summary          = 'ZHHAlertViewController 是 UIKit 的 UIAlertView 的最佳替代方案'
 
   # 项目的详细描述信息，注意这里的文字长度要比 s.summary 长，否则会被认为格式不合格
@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   
   # 作者信息
-  s.author           = { '宁小陌y' => '136769890@qq.com' }
+  s.author           = { '桃色三岁' => '136769890@qq.com' }
   
   # Git 仓库地址及版本号，版本号直接使用 s.version
   s.source           = { :git => 'https://github.com/yue5yueliang/ZHHAlertViewController.git', :tag => s.version.to_s }

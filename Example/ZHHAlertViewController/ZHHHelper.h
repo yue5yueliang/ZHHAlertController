@@ -2,8 +2,8 @@
 //  ZHHHelper.h
 //  ZHHAlertViewController_Example
 //
-//  Created by 宁小陌 on 2022/7/27.
-//  Copyright © 2022 宁小陌y. All rights reserved.
+//  Created by 桃色三岁 on 2022/7/27.
+//  Copyright © 2022 桃色三岁y. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -67,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)nxm_make_fade_in;
 /// 左进右出
 - (void)nxm_make_from_left;
+/// 自定义宽高
+- (void)nxm_make_custom_size;
 - (void)nxm_make_need_update:(void (^)(void))completionBlock;
 @end
 

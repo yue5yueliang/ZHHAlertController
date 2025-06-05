@@ -16,35 +16,6 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     ZHHAlertViewDirectionRight
 };
 
-@implementation ZHHAlertAppearance
-
-- (instancetype)init {
-    self = [super init];
-    if (self) {
-        // 标题距顶部（与父视图顶部的距离），默认 15
-        _titleTopPadding = 15.0;
-        // 标题与内容之间的垂直间距，默认 10
-        _titleBottomPadding = 10.0;
-        // 内容区域左右内边距（标题和内容共用），默认 20
-        _contentLeftRightPadding = 20.0;
-        // 按钮上边距（即按钮上方到内容区域下方的距离），默认 0
-        _buttonTopPadding = 0.0;
-        // 按钮高度，默认 44
-        _buttonHeight = 44.0;
-        // 按钮距底部（与父视图底部的距离），默认 0
-        _buttonBottomPadding = 0.0;
-        // 按钮左右内边距，默认 0
-        _buttonLeftRightPadding = 0.0;
-        // 按钮之间的水平间距（当有多个按钮时），默认 0
-        _buttonSpacing = 0.0;
-        // 弹窗默认宽高
-        _width = 284.0;
-        _height = 135.0;
-    }
-    return self;
-}
-
-@end
 
 @interface ZHHAlertViewController () <UIScrollViewDelegate> {
     // 状态标识
@@ -54,9 +25,9 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 // 弹窗容器视图（包含 titleLabel, scrollView 等内容）
 @property (nonatomic, strong) UIView *containerView;
 
-// 弹窗尺寸缓存
-@property (nonatomic, assign) CGFloat width;    ///< 弹窗宽度
-@property (nonatomic, assign) CGFloat height;   ///< 弹窗高度
+//// 弹窗尺寸缓存
+//@property (nonatomic, assign) CGFloat width;    ///< 弹窗宽度
+//@property (nonatomic, assign) CGFloat height;   ///< 弹窗高度
 
 // 按钮视图
 @property (nonatomic, strong) UIStackView *buttonStackView; ///< 按钮容器（使用 UIStackView 实现）
@@ -69,9 +40,6 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 // 内容滚动视图
 @property (nonatomic, strong, readwrite) UIScrollView *scrollView;
 
-// 弹窗外观配置模型
-@property (nonatomic, strong) ZHHAlertAppearance *model;
-
 @property (nonatomic, strong) NSLayoutConstraint *widthConstraint;   ///< 自身宽度约束
 @property (nonatomic, strong) NSLayoutConstraint *heightConstraint;  ///< 自身高度约束
 @property (nonatomic, strong) NSLayoutConstraint *scrollHeightConstraint;  ///< content内容高度约束
@@ -80,15 +48,21 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 @implementation ZHHAlertViewController
 
-#pragma mark - Init Methods
-
-/// 初始化方法：传入 model，使用默认 frame
-- (instancetype)initWithModel:(ZHHAlertAppearance *)model {
+- (instancetype)init {
     self = [super initWithFrame:CGRectZero];
     if (self) {
-        _model = model;
+        self.width = 284.0;  // 弹窗宽度，默认 284
+        self.height = 135.0; // 弹窗高度，默认 135
+        [self configureDefaultAppearance];
+    }
+    return self;
+}
 
-        self.shouldDimBackgroundWhenShowInView = YES;
+- (instancetype)initWithFrame:(CGRect)frame {
+    self = [super initWithFrame:frame];
+    if (self) {
+        self.width = frame.size.width;
+        self.height = frame.size.height;
         [self configureDefaultAppearance];
     }
     return self;
@@ -97,19 +71,42 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 #pragma mark - 配置默认外观
 
 - (void)configureDefaultAppearance {
+    
+    /// 布局配置
+    self.titleTopPadding = 15.0;          // 标题距顶部，默认 15
+    self.titleBottomPadding = 10.0;       // 标题与内容之间垂直间距，默认 10
+    self.contentLeftRightPadding = 20.0;  // 标题和内容左右内边距，默认 20
+    self.buttonTopPadding = 0.0;          // 按钮上边距，默认 0
+    self.buttonBottomPadding = 0.0;       // 按钮距底部，默认 0
+    self.buttonLeftRightPadding = 0.0;    // 按钮左右内边距，默认 0
+    self.buttonSpacing = 0.0;             // 多按钮水平间距，默认 0
+    self.buttonHeight = 44.0;             // 按钮高度，默认 44
+
+    /// 外观配置
+    self.cornerRadius = 8.0;              // 圆角半径，默认 8
     self.backgroundColor = UIColor.whiteColor;
+    self.separatorColor = UIColor.separatorColor; // 分隔线颜色，默认系统色
     
-    // 初始化基本属性
-    self.clipsToBounds = YES;
-    self.cornerRadius = 8; // 圆角半径
-    self.shouldHighlightButtonOnClick = YES; // 按钮点击时高亮
-    self.shouldDimBackgroundWhenShowInWindow = YES; // 是否显示背景变暗
-    self.shouldDismissOnActionButtonClicked = YES; // 点击按钮后是否自动消失
-    self.dimAlpha = 0.4; // 背景变暗透明度
-    
-    // 设置默认动画类型
+    /// 动画配置
     self.appearAnimationType = ZHHAlertViewAnimationTypeDefault;
     self.disappearAnimationType = ZHHAlertViewAnimationTypeDefault;
+    self.appearTime = 0.2;                // 弹出动画时长，默认 0.2
+    self.disappearTime = 0.1;             // 消失动画时长，默认 0.1
+
+    /// 行为配置
+    self.shouldHighlightButtonOnClick = YES;            // 点击按钮是否高亮，默认 YES
+    self.shouldDismissOnActionButtonClicked = YES;      // 点击按钮是否关闭弹窗，默认 YES
+    self.cancelButtonPositionRight = NO;                // 取消按钮是否在右侧，默认 NO
+    self.shouldDismissOnOutsideTapped = NO;             // 点击外部是否关闭，默认 NO
+
+    /// 背景配置
+    self.shouldDimBackgroundWhenShowInView = YES;       // 是否在视图中禁用模糊背景，默认 NO
+    self.shouldDimBackgroundWhenShowInWindow = YES;     // 弹窗在 window 时背景变暗，默认 YES
+    self.shouldDimBackgroundWhenShowInView = NO;        // 弹窗在 view 中背景变暗，默认 NO
+    self.dimAlpha = 0.4;                                // 背景遮罩透明度，默认 0.4
+
+    /// 基础属性
+    self.clipsToBounds = YES;
 }
 
 #pragma mark - 设置 Alert View
@@ -119,8 +116,8 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     hasCustomContentView = YES;
     
     // 设置宽高
-    self.model.width = contentView.frame.size.width;
-    self.model.height = contentView.frame.size.height + self.model.buttonHeight + self.model.buttonTopPadding + self.model.buttonBottomPadding;
+    self.width = contentView.frame.size.width;
+    self.height = contentView.frame.size.height + self.buttonHeight + self.buttonTopPadding + self.buttonBottomPadding;
     
     // 设置 contentView 的 frame 并添加到 self 中
     contentView.frame = contentView.bounds;
@@ -131,11 +128,11 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 - (void)setupViews {
     self.layer.cornerRadius = self.cornerRadius;
     [self addSubview:self.buttonStackView];
-    if (self.model.buttonSpacing <= 0 && (self.model.cancelButtonTitle.length > 0 || self.model.otherButtonTitle.length > 0)) {
+    if (self.buttonSpacing <= 0 && (self.cancelButtonTitle.length > 0 || self.otherButtonTitle.length > 0)) {
         [self addSubview:self.horizontalSeparator];
     }
     
-    if (self.model.buttonSpacing <= 0 && (self.model.cancelButtonTitle.length > 0 && self.model.otherButtonTitle.length > 0)) {
+    if (self.buttonSpacing <= 0 && (self.cancelButtonTitle.length > 0 && self.otherButtonTitle.length > 0)) {
         [self addSubview:self.verticalSeparator];
     }
 
@@ -160,19 +157,19 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
         [NSLayoutConstraint activateConstraints:@[
             // containerView 约束
             [self.containerView.topAnchor constraintEqualToAnchor:self.topAnchor constant:0],
-            [self.containerView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.contentLeftRightPadding],
-            [self.containerView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.contentLeftRightPadding],
+            [self.containerView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.contentLeftRightPadding],
+            [self.containerView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.contentLeftRightPadding],
             [self.containerView.bottomAnchor constraintEqualToAnchor:self.buttonStackView.topAnchor constant:-0],
             
             // 1️⃣ titleLabel 约束
-            [self.titleLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:self.model.titleTopPadding],
-            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.contentLeftRightPadding],
-            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.contentLeftRightPadding],
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:self.titleTopPadding],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.contentLeftRightPadding],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.contentLeftRightPadding],
             
             // 2️⃣ scrollView 初始高度约束（会在后面动态更新）
-            [self.scrollView.topAnchor constraintEqualToAnchor:self.titleLabel.bottomAnchor constant:self.model.titleBottomPadding],
-            [self.scrollView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.contentLeftRightPadding],
-            [self.scrollView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.contentLeftRightPadding],
+            [self.scrollView.topAnchor constraintEqualToAnchor:self.titleLabel.bottomAnchor constant:self.titleBottomPadding],
+            [self.scrollView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.contentLeftRightPadding],
+            [self.scrollView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.contentLeftRightPadding],
             self.scrollHeightConstraint,
             
             // 3️⃣ contentLabel 约束（填充 scrollView）
@@ -186,7 +183,7 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
         // 4️⃣ 布局后更新 scrollView 高度 & 背景高度
         [self layoutIfNeeded];
         CGFloat contentWidth = CGRectGetWidth(self.scrollView.frame);
-        if (contentWidth == 0) contentWidth = self.model.width - self.model.contentLeftRightPadding * 2;
+        if (contentWidth == 0) contentWidth = self.width - self.contentLeftRightPadding * 2;
 
         CGSize titleSize = [self.titleLabel sizeThatFits:CGSizeMake(contentWidth, CGFLOAT_MAX)];
         CGFloat titleHeight = titleSize.height;
@@ -195,21 +192,21 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
         CGFloat screenH = UIScreen.mainScreen.bounds.size.height;
         CGFloat maxTotalHeight = screenH * 2.0 / 3.0; // 屏幕三分之二高度
-        CGFloat totalHeight = self.model.titleTopPadding + titleHeight + self.model.titleBottomPadding + contentHeight + self.model.buttonTopPadding + self.model.buttonHeight + self.model.buttonBottomPadding;
+        CGFloat totalHeight = self.titleTopPadding + titleHeight + self.titleBottomPadding + contentHeight + self.buttonTopPadding + self.buttonHeight + self.buttonBottomPadding;
 
         BOOL contentTooLarge = totalHeight > maxTotalHeight;
-        BOOL contentTooSmall = totalHeight < self.model.height;
+        BOOL contentTooSmall = totalHeight < self.height;
 
         if (contentTooLarge) {
             // 内容太大，限制最大高度，scrollView 启动滚动
             self.scrollView.scrollEnabled = YES;
-            CGFloat availableScrollHeight = maxTotalHeight - self.model.titleTopPadding - titleHeight - self.model.titleBottomPadding - self.model.buttonTopPadding - self.model.buttonHeight;
+            CGFloat availableScrollHeight = maxTotalHeight - self.titleTopPadding - titleHeight - self.titleBottomPadding - self.buttonTopPadding - self.buttonHeight;
             self.scrollHeightConstraint.constant = availableScrollHeight;
 
             self.heightConstraint.constant = maxTotalHeight;
         } else if (contentTooSmall) {
             self.scrollView.scrollEnabled = NO;
-            CGFloat availableScrollHeight = self.model.height - self.model.titleTopPadding - titleHeight - self.model.titleBottomPadding - self.model.buttonTopPadding - self.model.buttonHeight;
+            CGFloat availableScrollHeight = self.height - self.titleTopPadding - titleHeight - self.titleBottomPadding - self.buttonTopPadding - self.buttonHeight;
 
             if (contentHeight < availableScrollHeight) {
                 self.scrollHeightConstraint.constant = contentHeight;
@@ -217,7 +214,7 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
                 self.scrollHeightConstraint.constant = availableScrollHeight;
             }
 
-            self.heightConstraint.constant = self.model.height;
+            self.heightConstraint.constant = self.height;
         } else {
             // 内容合适，scrollView 高度为 contentHeight
             self.scrollView.scrollEnabled = NO;
@@ -229,20 +226,20 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
         
     // buttonStackView 约束
     [NSLayoutConstraint activateConstraints:@[
-        [self.buttonStackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.buttonLeftRightPadding],
-        [self.buttonStackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.buttonLeftRightPadding],
-        [self.buttonStackView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-self.model.buttonBottomPadding],
+        [self.buttonStackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.buttonLeftRightPadding],
+        [self.buttonStackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.buttonLeftRightPadding],
+        [self.buttonStackView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-self.buttonBottomPadding],
         // 添加默认高度约束
-        [self.buttonStackView.heightAnchor constraintEqualToConstant:self.model.buttonHeight]
+        [self.buttonStackView.heightAnchor constraintEqualToConstant:self.buttonHeight]
     ]];
     
     // 获取 1 像素高度（根据屏幕 scale 自适应）
     CGFloat onePixel = 1.0 / [UIScreen mainScreen].scale;
 
-    if (self.model.buttonSpacing <= 0) {
+    if (self.buttonSpacing <= 0) {
         
-        BOOL hasCancelButton = (self.model.cancelButtonTitle.length > 0);
-        BOOL hasOtherButton = (self.model.otherButtonTitle.length > 0);
+        BOOL hasCancelButton = (self.cancelButtonTitle.length > 0);
+        BOOL hasOtherButton = (self.otherButtonTitle.length > 0);
         
         if (hasCancelButton || hasOtherButton) {
             // 3️⃣ horizontalSeparator 约束（重写为与 buttonStackView 对齐，保证“1像素线”效果）
@@ -294,19 +291,19 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 /// @param view 目标父视图
 - (void)showInView:(UIView *)view {
     // 设置标题和内容
-    self.titleLabel.text = self.model.title;
-    self.contentLabel.text = self.model.content;
+    self.titleLabel.text = self.title;
+    self.contentLabel.text = self.content;
     
     // 设置按钮容器的间距
-    self.buttonStackView.spacing = self.model.buttonSpacing;
+    self.buttonStackView.spacing = self.buttonSpacing;
     
-    if (self.model.cancelButtonTitle.length > 0) {
-        [self.cancelButton setTitle:self.model.cancelButtonTitle forState:UIControlStateNormal];
+    if (self.cancelButtonTitle.length > 0) {
+        [self.cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
         [self.buttonStackView addArrangedSubview:self.cancelButton];
     }
 
-    if (self.model.otherButtonTitle.length > 0) {
-        [self.otherButton setTitle:self.model.otherButtonTitle forState:UIControlStateNormal];
+    if (self.otherButtonTitle.length > 0) {
+        [self.otherButton setTitle:self.otherButtonTitle forState:UIControlStateNormal];
         [self.buttonStackView addArrangedSubview:self.otherButton];
     }
     
@@ -314,8 +311,8 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     [view addSubview:self];
 
     // 创建约束时
-    self.widthConstraint  = [self.widthAnchor constraintEqualToConstant:self.model.width];
-    self.heightConstraint = [self.heightAnchor constraintEqualToConstant:self.model.height];
+    self.widthConstraint  = [self.widthAnchor constraintEqualToConstant:self.width];
+    self.heightConstraint = [self.heightAnchor constraintEqualToConstant:self.height];
     
     // 设置约束以居中显示弹窗（避免使用 frame）
     self.translatesAutoresizingMaskIntoConstraints = NO;

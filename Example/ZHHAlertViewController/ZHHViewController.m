@@ -2,8 +2,8 @@
 //  ZHHViewController.m
 //  ZHHAlertViewController
 //
-//  Created by 宁小陌y on 07/26/2022.
-//  Copyright (c) 2022 宁小陌y. All rights reserved.
+//  Created by 桃色三岁y on 07/26/2022.
+//  Copyright (c) 2022 桃色三岁y. All rights reserved.
 //
 
 #import "ZHHViewController.h"
@@ -28,10 +28,11 @@
                         @"无标题文本提示",
                         @"一个按钮",
                         @"自定义背景颜色",
-                        @"自定义 宽高",
+                        @"自定义 宽",
                         @"自定义 View",
                         @"淡入动画",
-                        @"从左侧飞入"];
+                        @"从左侧飞入",
+                        @"自定义Size"];
     self.mainTableView = ({
         UITableView *tableView = [UITableView new];
         tableView.showsVerticalScrollIndicator = NO;
@@ -98,6 +99,9 @@
             break;
         case 10:
             [[ZHHHelper sharedInstance] nxm_make_from_left];
+            break;
+        case 11:
+            [[ZHHHelper sharedInstance] nxm_make_custom_size];
             break;
         default:
             break;

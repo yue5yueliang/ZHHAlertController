@@ -25,43 +25,61 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewAnimationType) {
     ZHHAlertViewAnimationTypeZoomOut     = 9   ///< 缩放退出
 };
 
+@interface ZHHAlertAppearance : NSObject
+/// 标题距父视图顶部的间距（默认 14pt）
+@property (nonatomic, assign) CGFloat titleTopPadding;
+
+/// 标题与内容之间的垂直间距（默认 2pt）
+@property (nonatomic, assign) CGFloat titleBottomPadding;
+
+/// 内容区域的左右内边距（标题和内容公用，默认 20pt）
+@property (nonatomic, assign) CGFloat contentLeftRightPadding;
+
+/// 按钮上方距内容下方的间距（默认 20pt）
+@property (nonatomic, assign) CGFloat buttonTopPadding;
+
+/// 按钮高度（默认 44pt）
+@property (nonatomic, assign) CGFloat buttonHeight;
+
+/// 按钮距父视图底部的间距（默认 0pt）
+@property (nonatomic, assign) CGFloat buttonBottomPadding;
+
+/// 按钮的左右内边距（默认 0pt）
+@property (nonatomic, assign) CGFloat buttonLeftRightPadding;
+
+/// 多个按钮之间的水平间距（默认 0pt）
+@property (nonatomic, assign) CGFloat buttonSpacing;
+
+// 弹窗尺寸缓存
+@property (nonatomic, assign) CGFloat width;    ///< 弹窗宽度
+@property (nonatomic, assign) CGFloat height;   ///< 弹窗高度
+
+// 标题与正文内容
+@property (nonatomic, strong) NSString *title;  ///< 标题内容
+@property (nonatomic, strong) NSString *content;///< 文本内容
+
+// 按钮标题
+@property (nonatomic, strong) NSString *cancelButtonTitle;///< 取消按钮文字
+@property (nonatomic, strong) NSString *otherButtonTitle; ///< 其他按钮文字
+@end
+
 typedef void (^ZHHAlertViewControllerBlock)(void);
 
 @interface ZHHAlertViewController : UIView
 
 #pragma mark - 公共属性
 
-/// 自定义 Alert 显示区域，未设置时默认居中显示。不要直接使用 [UIView setFrame:]。
-@property (nonatomic, assign) CGRect customFrame;
+/// 自定义 Alert 的内容视图，大小决定 Alert 尺寸。
+@property (nonatomic, strong) UIView *customContentView;// 包裹 titleLabel, scrollView
 
-/// Alert 的内容视图，大小决定 Alert 尺寸。设置后无需指定 customFrame。
-@property (nonatomic, strong) UIView *contentView;
+/// 按钮 & 标签（可自定义样式，文字内容由model去控制）
+@property (nonatomic, strong) UIButton *cancelButton;   ///< 默认蓝色文字，系统字体 17
+@property (nonatomic, strong) UIButton *otherButton;    ///< 默认蓝色文字，系统字体 17
+@property (nonatomic, strong) UILabel *titleLabel;      ///< 默认黑色文字，系统粗体 17
+@property (nonatomic, strong) UILabel *contentLabel;    ///< 默认灰色文字，系统字体 15
 
-/// Alert 的滚动容器（只读）
-@property (nonatomic, strong, readonly) UIScrollView *scrollView;
-@property (nonatomic, strong) UIStackView *stackView;   ///< 默认蓝色文字，系统字体 16
-
-/// 按钮 & 标签（可自定义样式）
-@property (nonatomic, strong) UIButton *cancelButton;   ///< 默认蓝色文字，系统字体 16
-@property (nonatomic, strong) UIButton *otherButton;    ///< 默认蓝色文字，系统字体 16
-@property (nonatomic, strong) UILabel *titleLabel;      ///< 默认黑色文字，系统粗体 16
-@property (nonatomic, strong) UILabel *contentLabel;    ///< 默认灰色文字，系统字体 14
-
-/// UI 间距 & 尺寸
-@property (nonatomic, assign) CGFloat buttonHeight;              ///< 默认 44
-@property (nonatomic, assign) CGFloat titleTopPadding;           ///< 默认 14
-@property (nonatomic, assign) CGFloat titleBottomPadding;        ///< 默认 2
-@property (nonatomic, assign) CGFloat contentBottomPadding;      ///< 默认 20
-@property (nonatomic, assign) CGFloat contentLeftRightPadding;   ///< 默认 20
-
-/// 边框 & 圆角 & 背景
-@property (nonatomic, strong) UIColor *borderColor;       ///< 默认无边框
-@property (nonatomic, assign) CGFloat borderWidth;         ///< 默认 0
 @property (nonatomic, assign) CGFloat cornerRadius;        ///< 默认 8
-@property (nonatomic, strong) UIImage *backgroundImage;    ///< 自定义背景图，默认 nil
 
-/// 分隔线
-@property (nonatomic, assign) BOOL hideSeperator;          ///< 是否隐藏按钮分隔线，默认 NO
 @property (nonatomic, strong) UIColor *separatorColor;     ///< 分隔线颜色，默认与系统一致
 
 /// 弹窗动画配置
@@ -79,7 +97,7 @@ typedef void (^ZHHAlertViewControllerBlock)(void);
 /// 模糊背景配置
 @property (nonatomic, assign) BOOL shouldDimBackgroundWhenShowInWindow;   ///< 是否在窗口中启用模糊背景，默认 YES
 @property (nonatomic, assign) BOOL shouldDimBackgroundWhenShowInView;     ///< 是否在视图中禁用模糊背景，默认 NO
-@property (nonatomic, assign) CGFloat dimAlpha;                           ///< 背景透明度，默认 0.2
+@property (nonatomic, assign) CGFloat dimAlpha;                           ///< 背景透明度，默认 0.4
 
 /// 事件处理
 @property (nonatomic, weak) id<ZHHAlertViewControllerDelegate> delegate;
@@ -88,24 +106,8 @@ typedef void (^ZHHAlertViewControllerBlock)(void);
 
 #pragma mark - 初始化方法
 
-/// 标准初始化方法（支持 delegate & 可变按钮）
-- (instancetype)initWithTitle:(NSString * _Nullable)title
-                      content:(NSString * _Nullable)content
-                     delegate:(id)delegate
-           cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle
-           otherButtonTitles:(NSString *_Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
-
-/// 便捷初始化方法
-- (instancetype)initWithTitle:(NSString * _Nullable)title
-                      content:(NSString * _Nullable)content
-           cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle
-            otherButtonTitle:(NSString * _Nullable)otherButtonTitle;
-
-#pragma mark - 事件绑定方法
-
-/// 使用 block 设置按钮回调（替代属性方式）
-- (void)actionWithBlocksCancelButtonHandler:(void (^)(void))cancelHandler
-                        otherButtonHandler:(void (^)(void))otherHandler;
+/// 初始化方法：传入 model，使用默认 frame
+- (instancetype)initWithModel:(ZHHAlertAppearance *)model;
 
 #pragma mark - 展示与隐藏
 

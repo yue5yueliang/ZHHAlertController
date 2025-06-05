@@ -14,11 +14,6 @@
 @property (strong, nonatomic) UITableView *mainTableView;
 @end
 
-NSString *sampleTitle = @"Title";
-NSString *shortSampleMessage = @"Hello World!";
-NSString *sampleMessage = @"The quick brown fox jumps over the lazy dog.";
-NSString *longSampleMessage = @"Yesterday, all my troubles seemed so far away. Now it looks as though they're here to stay. Oh, I believe in yesterday. Suddenly I'm not half the man I used to be. There's a shadow hanging over me. Oh, yesterday came suddenly.";
-
 @implementation ZHHViewController
 
 - (void)viewDidLoad {
@@ -27,13 +22,13 @@ NSString *longSampleMessage = @"Yesterday, all my troubles seemed so far away. N
     
     self.title = @"示例";
     self.dataSource = @[@"自定义样式",
+                        @"自定义按钮样式",
                         @"普通提示",
                         @"长文本提示",
                         @"无标题文本提示",
                         @"一个按钮",
                         @"自定义背景颜色",
-                        @"自定义背景背景",
-                        @"自定义 Frame",
+                        @"自定义 宽高",
                         @"自定义 View",
                         @"淡入动画",
                         @"从左侧飞入"];
@@ -70,39 +65,39 @@ NSString *longSampleMessage = @"Yesterday, all my troubles seemed so far away. N
     
     switch (indexPath.row) {
         case 0:
-            [ZHHHelper nxm_make_need_update:^{
+            [[ZHHHelper sharedInstance] nxm_make_need_update:^{
                 
             }];
             break;
         case 1:
-            [ZHHHelper nxm_make_exit];
+            [[ZHHHelper sharedInstance] nxm_make_custom_button];
             break;
         case 2:
-            [ZHHHelper nxm_make_multiple_text];
+            [[ZHHHelper sharedInstance] nxm_make_exit];
             break;
         case 3:
-            [ZHHHelper nxm_make_untitled_text];
+            [[ZHHHelper sharedInstance] nxm_make_multiple_text];
             break;
         case 4:
-            [ZHHHelper nxm_make_single_button];
+            [[ZHHHelper sharedInstance] nxm_make_untitled_text];
             break;
         case 5:
-            [ZHHHelper nxm_make_custom_background_color];
+            [[ZHHHelper sharedInstance] nxm_make_single_button];
             break;
         case 6:
-            [ZHHHelper nxm_make_custom_background_image:self.view.frame.size];
+            [[ZHHHelper sharedInstance] nxm_make_custom_background_color];
             break;
         case 7:
-            [ZHHHelper nxm_make_custom_frame:self.view.frame.size];
+            [[ZHHHelper sharedInstance] nxm_make_custom_frame:self.view.frame.size];
             break;
         case 8:
-            [ZHHHelper nxm_make_custom_view:self.view.frame.size];
+            [[ZHHHelper sharedInstance] nxm_make_custom_view:self.view.frame.size];
             break;
         case 9:
-            [ZHHHelper nxm_make_fade_in];
+            [[ZHHHelper sharedInstance] nxm_make_fade_in];
             break;
         case 10:
-            [ZHHHelper nxm_make_from_left];
+            [[ZHHHelper sharedInstance] nxm_make_from_left];
             break;
         default:
             break;

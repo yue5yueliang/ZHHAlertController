@@ -41,29 +41,33 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface ZHHHelper : NSObject
+
++ (instancetype)sharedInstance;
+
 /// 普通短文本提示
-+ (void)nxm_make_exit;
+- (void)nxm_make_exit;
+/// 自定义按钮样式
+- (void)nxm_make_custom_button;
 
 /// 长文本提示
-+ (void)nxm_make_multiple_text;
+- (void)nxm_make_multiple_text;
 /// 无标题文本提示
-+ (void)nxm_make_untitled_text;
+- (void)nxm_make_untitled_text;
 /// 单个按钮
-+ (void)nxm_make_single_button;
+- (void)nxm_make_single_button;
 /// 自定义背景颜色
-+ (void)nxm_make_custom_background_color;
+- (void)nxm_make_custom_background_color;
 /// 自定义背景图片
-+ (void)nxm_make_custom_background_image:(CGSize)size;
+- (void)nxm_make_custom_background_image:(CGSize)size;
 /// 自定义Frame
-+ (void)nxm_make_custom_frame:(CGSize)size;
+- (void)nxm_make_custom_frame:(CGSize)size;
 /// 自定义View
-+ (void)nxm_make_custom_view:(CGSize)size;
+- (void)nxm_make_custom_view:(CGSize)size;
 /// 渐隐渐显
-+ (void)nxm_make_fade_in;
+- (void)nxm_make_fade_in;
 /// 左进右出
-+ (void)nxm_make_from_left;
-+ (void)nxm_make_need_update:(void (^)(void))completionBlock;
-+ (ZHHAlertViewController *)popupController:(ZHHPopupModel *)model;
+- (void)nxm_make_from_left;
+- (void)nxm_make_need_update:(void (^)(void))completionBlock;
 @end
 
 NS_ASSUME_NONNULL_END

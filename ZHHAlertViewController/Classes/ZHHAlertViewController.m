@@ -7,11 +7,6 @@
 //
 
 #import "ZHHAlertViewController.h"
-#import "ZHHAlertViewHelper.h"
-
-#define DEFAULT_ALERT_WIDTH 270
-#define DEFAULT_ALERT_HEIGHT 156
-#define DEFAULT_TITLE_HEIGHT 20
 
 // 枚举化方向，避免字符串对比
 typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
@@ -21,53 +16,65 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     ZHHAlertViewDirectionRight
 };
 
-@interface ZHHAlertViewController () <UIScrollViewDelegate> {
-    // 元素布局缓存
-    CGRect titleLabelFrame;           ///< 标题标签的布局框
-    CGRect contentLabelFrame;         ///< 内容标签的布局框
-    CGRect cancelButtonFrame;         ///< 取消按钮的布局框
-    CGRect otherButtonFrame;          ///< 其他按钮的布局框
+@implementation ZHHAlertAppearance
 
-    // 分隔线布局缓存
-    CGRect verticalSeparatorFrame;    ///< 竖直分隔线的布局框
-    CGRect horizontalSeparatorFrame;  ///< 水平分隔线的布局框
-
-    // 状态标识
-    BOOL hasCustomFrame;            ///< 标识是否自定义了布局
-    BOOL hasCustomContentView;              ///< 标识是否设置了 contentView
+- (instancetype)init {
+    self = [super init];
+    if (self) {
+        // 标题距顶部（与父视图顶部的距离），默认 15
+        _titleTopPadding = 15.0;
+        // 标题与内容之间的垂直间距，默认 10
+        _titleBottomPadding = 10.0;
+        // 内容区域左右内边距（标题和内容共用），默认 20
+        _contentLeftRightPadding = 20.0;
+        // 按钮上边距（即按钮上方到内容区域下方的距离），默认 0
+        _buttonTopPadding = 0.0;
+        // 按钮高度，默认 44
+        _buttonHeight = 44.0;
+        // 按钮距底部（与父视图底部的距离），默认 0
+        _buttonBottomPadding = 0.0;
+        // 按钮左右内边距，默认 0
+        _buttonLeftRightPadding = 0.0;
+        // 按钮之间的水平间距（当有多个按钮时），默认 0
+        _buttonSpacing = 0.0;
+        // 弹窗默认宽高
+        _width = 284.0;
+        _height = 135.0;
+    }
+    return self;
 }
 
-// 弹窗容器视图
-@property (nonatomic, strong) UIView *customContentView;
+@end
 
-// 分隔线视图
-@property (nonatomic, strong) UIView *horizontalSeparator;
-@property (nonatomic, strong) UIView *verticalSeparator;
+@interface ZHHAlertViewController () <UIScrollViewDelegate> {
+    // 状态标识
+    BOOL hasCustomContentView; ///< 是否自定义设置了 contentView
+}
 
-// 背景遮罩视图（非模糊，纯黑透明背景）
+// 弹窗容器视图（包含 titleLabel, scrollView 等内容）
+@property (nonatomic, strong) UIView *containerView;
+
+// 弹窗尺寸缓存
+@property (nonatomic, assign) CGFloat width;    ///< 弹窗宽度
+@property (nonatomic, assign) CGFloat height;   ///< 弹窗高度
+
+// 按钮视图
+@property (nonatomic, strong) UIStackView *buttonStackView; ///< 按钮容器（使用 UIStackView 实现）
+@property (nonatomic, strong) UIView *horizontalSeparator;  ///< 水平分隔线（按钮上方）
+@property (nonatomic, strong) UIView *verticalSeparator;    ///< 垂直分隔线（按钮中间）
+
+// 背景遮罩（非模糊，黑色透明背景）
 @property (nonatomic, strong) UIView *backgroundDimView;
 
-// 标题与正文内容
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) NSString *content;
-
-// 按钮标题
-@property (nonatomic, strong) NSString *cancelButtonTitle;
-@property (nonatomic, strong) NSString *otherButtonTitle;
-
-// 内容滚动容器
+// 内容滚动视图
 @property (nonatomic, strong, readwrite) UIScrollView *scrollView;
 
-// 标题区高度（用于布局计算）
-@property (nonatomic, assign) CGFloat titleHeight;
+// 弹窗外观配置模型
+@property (nonatomic, strong) ZHHAlertAppearance *model;
 
-// 弹窗整体尺寸缓存
-@property (nonatomic, assign) CGFloat width;
-@property (nonatomic, assign) CGFloat height;
-
-// 按钮颜色缓存，用于点击高亮后恢复
-@property (nonatomic, strong) UIColor *originalCancelButtonColor;
-@property (nonatomic, strong) UIColor *originalOtherButtonColor;
+@property (nonatomic, strong) NSLayoutConstraint *widthConstraint;   ///< 自身宽度约束
+@property (nonatomic, strong) NSLayoutConstraint *heightConstraint;  ///< 自身高度约束
+@property (nonatomic, strong) NSLayoutConstraint *scrollHeightConstraint;  ///< content内容高度约束
 
 @end
 
@@ -75,117 +82,45 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 #pragma mark - Init Methods
 
-// 初始化方法：传入 frame 参数
-- (id)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
+/// 初始化方法：传入 model，使用默认 frame
+- (instancetype)initWithModel:(ZHHAlertAppearance *)model {
+    self = [super initWithFrame:CGRectZero];
     if (self) {
-        // 初始化代码
+        _model = model;
+
+        self.shouldDimBackgroundWhenShowInView = YES;
+        [self configureDefaultAppearance];
     }
     return self;
 }
 
-// 初始化方法：支持多个按钮标题
-- (instancetype)initWithTitle:(NSString *)title content:(NSString *)content delegate:(id)delegate cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitles:(NSString * _Nullable)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION {
-    NSString *firstOtherButtonTitle;
+#pragma mark - 配置默认外观
 
-    // 使用可变参数列表获取其他按钮标题
-    va_list args;
-    va_start(args, otherButtonTitles);
-    for (NSString *arg = otherButtonTitles; arg != nil; arg = va_arg(args, NSString*)) {
-        if (!firstOtherButtonTitle) {
-            firstOtherButtonTitle = arg;
-            break;
-        }
-    }
-    va_end(args);
+- (void)configureDefaultAppearance {
+    self.backgroundColor = UIColor.whiteColor;
     
-    // 初始化弹窗控制器
-    if ([self initWithTitle:title content:content cancelButtonTitle:cancelButtonTitle otherButtonTitle:otherButtonTitles]) {
-        self.delegate = delegate;
-        return self;
-    }
+    // 初始化基本属性
+    self.clipsToBounds = YES;
+    self.cornerRadius = 8; // 圆角半径
+    self.shouldHighlightButtonOnClick = YES; // 按钮点击时高亮
+    self.shouldDimBackgroundWhenShowInWindow = YES; // 是否显示背景变暗
+    self.shouldDismissOnActionButtonClicked = YES; // 点击按钮后是否自动消失
+    self.dimAlpha = 0.4; // 背景变暗透明度
     
-    return nil;
-}
-
-// 初始化方法：基本属性设置
-- (instancetype)initWithTitle:(NSString * _Nullable)title content:(NSString * _Nullable)content cancelButtonTitle:(NSString * _Nullable)cancelButtonTitle otherButtonTitle:(NSString * _Nullable)otherButtonTitle {
-    self.width = DEFAULT_ALERT_WIDTH;
-    self.height = DEFAULT_ALERT_HEIGHT;
-    
-    self = [super initWithFrame:CGRectMake(0, 0, self.width, self.height)];
-    if (self) {
-        // 初始化基本属性
-        self.clipsToBounds = YES;
-        self.title = title;
-        self.content = content;
-        self.cancelButtonTitle = cancelButtonTitle;
-        self.otherButtonTitle = otherButtonTitle;
-        
-        // 设置默认动画类型
-        self.appearAnimationType = ZHHAlertViewAnimationTypeDefault;
-        self.disappearAnimationType = ZHHAlertViewAnimationTypeDefault;
-        
-        // 设置默认布局参数
-        self.cornerRadius = 8; // 圆角半径
-        self.shouldHighlightButtonOnClick = YES; // 按钮点击时高亮
-        self.buttonHeight = 44;// 按钮高度
-        self.titleTopPadding = 14;// 标题与内容间距
-        self.titleHeight = DEFAULT_TITLE_HEIGHT;// 标题高度
-        self.titleBottomPadding = 2;// 内容底部间距
-        self.contentBottomPadding = 20;// 内容底部间距
-        self.contentLeftRightPadding = 20;// 内容左右间距
-        
-        self.shouldDimBackgroundWhenShowInWindow = YES; // 是否显示背景变暗
-        self.shouldDismissOnActionButtonClicked = YES; // 点击按钮后是否自动消失
-        self.dimAlpha = 0.4; // 背景变暗透明度
-    }
-    return self;
-}
-
-#pragma mark - Show & Dismiss Methods
-
-// 显示弹窗视图在指定视图中
-- (void)showInView:(UIView *_Nonnull)view {
-    [self calculateFrame]; // 计算视图的布局框架
-    [self setupViews]; // 设置视图
-    
-    if (!hasCustomFrame) {
-        // 默认居中显示弹窗
-        self.frame = CGRectMake((view.frame.size.width - self.frame.size.width) / 2, (view.frame.size.height - self.frame.size.height) / 2, self.frame.size.width, self.frame.size.height);
-    }
-
-    // 显示背景变暗效果（如果需要）
-    if (self.shouldDimBackgroundWhenShowInView && view != [ZHHAlertViewHelper keyWindow]) {
-
-        self.backgroundDimView = [[UIView alloc] initWithFrame:[ZHHAlertViewHelper keyWindow].bounds];
-        self.backgroundDimView.backgroundColor = [UIColor colorWithWhite:0 alpha:self.dimAlpha];
-        
-        // 添加点击外部关闭弹窗的手势识别器
-        UITapGestureRecognizer *outsideTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outsideTap:)];
-        [self.backgroundDimView addGestureRecognizer:outsideTapGesture];
-        [view addSubview:self.backgroundDimView];
-    }
-    
-    // 弹窗将要显示时的预处理
-    [self alertViewWillAppear];
-    
-    // 将弹窗视图添加到指定视图
-    [self addThisViewToView:view];
+    // 设置默认动画类型
+    self.appearAnimationType = ZHHAlertViewAnimationTypeDefault;
+    self.disappearAnimationType = ZHHAlertViewAnimationTypeDefault;
 }
 
 #pragma mark - 设置 Alert View
 
-- (void)setContentView:(UIView *)contentView {
-    if (!self.title && !self.content) {
-        self.buttonHeight = 0;
-    }
-    self.customContentView = contentView;
+- (void)setCustomContentView:(UIView *)contentView {
+    _customContentView = contentView;
     hasCustomContentView = YES;
     
     // 设置宽高
-    self.width = contentView.frame.size.width;
-    self.height = contentView.frame.size.height + self.buttonHeight;
+    self.model.width = contentView.frame.size.width;
+    self.model.height = contentView.frame.size.height + self.model.buttonHeight + self.model.buttonTopPadding + self.model.buttonBottomPadding;
     
     // 设置 contentView 的 frame 并添加到 self 中
     contentView.frame = contentView.bounds;
@@ -193,216 +128,232 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     [self addSubview:contentView];
 }
 
-- (UIView *)contentView {
-    return self.customContentView;
-}
-
-- (void)setCenter:(CGPoint)center {
-    [super setCenter:center];
-    hasCustomFrame = YES;
-}
-
-- (void)setCustomFrame:(CGRect)frame {
-    [super setFrame:frame];
-    self.width = frame.size.width;
-    self.height = frame.size.height;
-    hasCustomFrame = YES;
-    [self calculateFrame];
-}
-
-- (void)calculateFrame {
-    BOOL hasButton = (self.cancelButtonTitle || self.otherButtonTitle);
-
-    // 计算内容区域的 frame
-    if (!hasCustomContentView) {
-        if (!hasCustomFrame) {
-            UIFont *titleFont = self.titleLabel.font ?: [UIFont systemFontOfSize:14];
-            UIFont *contentFont = self.contentLabel.font ?: [UIFont systemFontOfSize:14];
-            
-            CGSize maximumLabelSize = CGSizeMake(self.width - self.contentLeftRightPadding * 2, FLT_MAX);
-            
-            CGRect titleRect = [self.title boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: titleFont} context:nil];
-            CGRect textRect = [self.content boundingRectWithSize:maximumLabelSize options:NSStringDrawingUsesLineFragmentOrigin attributes:@{NSFontAttributeName: contentFont} context:nil];
-            
-            CGFloat titleHeight = titleRect.size.height + 16;
-            self.titleHeight = MAX(titleHeight, DEFAULT_TITLE_HEIGHT);
-            CGFloat contentHeight = textRect.size.height;
-            
-            CGFloat newHeight = contentHeight + self.titleHeight + self.buttonHeight + self.titleTopPadding + self.titleBottomPadding + self.contentBottomPadding;
-            self.height = newHeight;
-            
-            // 限制最大高度
-            CGFloat mainHeight = [UIScreen mainScreen].bounds.size.height;
-            CGFloat maxHeight = mainHeight / 3 * 1.5;
-            self.height = MIN(newHeight, maxHeight + self.titleHeight + self.buttonHeight + self.titleTopPadding + self.titleBottomPadding + self.contentBottomPadding);
-            
-            self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.height);
-        }
-        
-        // 标题的 frame 计算
-        if (self.title.length > 0) {
-            titleLabelFrame = CGRectMake(self.contentLeftRightPadding, self.titleTopPadding, self.width - self.contentLeftRightPadding * 2, self.titleHeight);
-        } else {
-            titleLabelFrame = CGRectZero;
-        }
-        
-        // 内容的 frame 计算
-        if (self.content.length > 0) {
-            CGFloat titleMaxY = CGRectGetMaxY(titleLabelFrame);
-            CGFloat contentHeight = self.height - titleLabelFrame.size.height - self.titleTopPadding - self.titleBottomPadding - (hasButton ? self.buttonHeight : 0);
-            NSLog(@"contentHeight -- %F",contentHeight);
-            contentLabelFrame = CGRectMake(self.contentLeftRightPadding, titleMaxY + self.titleBottomPadding, self.width - 2 * self.contentLeftRightPadding, contentHeight);
-        } else {
-            contentLabelFrame = CGRectZero;
-        }
-    }
-
-    // 计算分隔线的 frame
-    if (self.hideSeperator || !hasButton) {
-        verticalSeparatorFrame = CGRectZero;
-        horizontalSeparatorFrame = CGRectZero;
-    } else {
-        verticalSeparatorFrame = CGRectMake((self.width - 0.5) / 2, self.height - self.buttonHeight, 0.5, self.buttonHeight);
-        horizontalSeparatorFrame = CGRectMake(0, self.height - self.buttonHeight, self.width, 0.5);
-    }
-
-    // 计算按钮的 frame
-    [self calculateButtonFrames];
-    
-    // 如果没有按钮，调整高度
-    if (!self.cancelButtonTitle && !self.otherButtonTitle) {
-        cancelButtonFrame = CGRectZero;
-        otherButtonFrame = CGRectZero;
-        self.height -= self.buttonHeight;
-        self.buttonHeight = 0;
-        self.frame = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.height);
-    }
-}
-
-- (void)calculateButtonFrames {
-    // 取消按钮 frame
-    if (!self.cancelButtonTitle) {
-        cancelButtonFrame = CGRectZero;
-    } else {
-        if (!self.otherButtonTitle) {
-            verticalSeparatorFrame = CGRectZero;
-            cancelButtonFrame = CGRectMake(0, self.height - self.buttonHeight, self.width, self.buttonHeight);
-        } else if (!self.cancelButtonPositionRight) {
-            cancelButtonFrame = CGRectMake(0, self.height - self.buttonHeight, self.width / 2, self.buttonHeight);
-        } else {
-            cancelButtonFrame = CGRectMake(self.width / 2, self.height - self.buttonHeight, self.width / 2, self.buttonHeight);
-        }
-    }
-
-    // 其他按钮 frame
-    if (!self.otherButtonTitle) {
-        otherButtonFrame = CGRectZero;
-    } else {
-        if (!self.cancelButtonTitle) {
-            verticalSeparatorFrame = CGRectZero;
-            otherButtonFrame = CGRectMake(0, self.height - self.buttonHeight, self.width, self.buttonHeight);
-        } else if (!self.cancelButtonPositionRight) {
-            otherButtonFrame = CGRectMake(self.width / 2, self.height - self.buttonHeight, self.width / 2, self.buttonHeight);
-        } else {
-            otherButtonFrame = CGRectMake(0, self.height - self.buttonHeight, self.width / 2, self.buttonHeight);
-        }
-    }
-}
-
 - (void)setupViews {
-    
-    // 设置背景色
-    if (self.backgroundImage) {
-        self.backgroundColor = [UIColor colorWithPatternImage:self.backgroundImage];
-    } else if (self.backgroundColor) {
-        // self.backgroundColor 已存在直接赋值没意义，可保留
-    } else {
-        self.backgroundColor = [UIColor whiteColor];
-    }
-
-    // 设置边框和圆角
-    self.layer.borderWidth = self.borderWidth;
-    self.layer.borderColor = self.borderColor ? self.borderColor.CGColor : [UIColor clearColor].CGColor;
     self.layer.cornerRadius = self.cornerRadius;
-
-    // 设置初始 frame（用于 sizeToFit 之前的调试）
-    self.titleLabel.frame = titleLabelFrame;
-    self.contentLabel.frame = contentLabelFrame;
-    self.cancelButton.frame = cancelButtonFrame;
-    self.otherButton.frame = otherButtonFrame;
-    self.horizontalSeparator.frame = horizontalSeparatorFrame;
-    self.verticalSeparator.frame = verticalSeparatorFrame;
+    [self addSubview:self.buttonStackView];
+    if (self.model.buttonSpacing <= 0 && (self.model.cancelButtonTitle.length > 0 || self.model.otherButtonTitle.length > 0)) {
+        [self addSubview:self.horizontalSeparator];
+    }
+    
+    if (self.model.buttonSpacing <= 0 && (self.model.cancelButtonTitle.length > 0 && self.model.otherButtonTitle.length > 0)) {
+        [self addSubview:self.verticalSeparator];
+    }
 
     // 🔍 打印初始 contentLabel 高度
-    NSLog(@"[初始] contentLabel.frame = %@", NSStringFromCGRect(self.contentLabel.frame));
+    NSLog(@"[初始] contentLabel.frame = %@", NSStringFromCGRect(self.frame));
 
     // 设置分割线颜色
     UIColor *sepColor = self.separatorColor ?: [UIColor separatorColor];
     self.horizontalSeparator.backgroundColor = sepColor;
     self.verticalSeparator.backgroundColor = sepColor;
 
-    // 处理 contentLabel 的 size 和 scrollView（前提是有 title 时）
-    if (self.title) {
-        
-        [self.contentLabel sizeToFit];
-        
-        CGFloat contentWidth = self.contentLabel.frame.size.width;
-        
-        CGFloat labelHeight = self.contentLabel.frame.size.height;
-//        labelHeight = labelHeight - 40;
-//        NSLog(@"[初始] labelHeight = %f contentWidth - %f", labelHeight,contentWidth); // 打印计算出的 labelHeight
-        
-        CGFloat screenH = UIScreen.mainScreen.bounds.size.height;
-        CGFloat maxHeight = screenH / 2.0;
-
-        // 如果 contentLabel 的高度超过最大高度，启用 scrollView
-        BOOL enableScroll = labelHeight > maxHeight;
-        self.scrollView.scrollEnabled = enableScroll;
-
-        CGFloat finalHeight = enableScroll ? maxHeight - 10 : labelHeight;
-        
-        // 设置 scrollView 的 frame
-        self.scrollView.frame = CGRectMake(self.contentLeftRightPadding, CGRectGetMaxY(self.titleLabel.frame) + 10, contentWidth, finalHeight);
-
-        // 设置 contentLabel 的最终 frame
-        self.contentLabel.frame = CGRectMake(0, 0, contentWidth, labelHeight);
-        
-        // 设置 scrollView 的 contentSize
-        self.scrollView.contentSize = CGSizeMake(contentWidth, labelHeight + 1); // 留一点余地
-    }
-
-    // 添加子视图
+    // 如果是自定义视图则不添加以下子视图
     if (!hasCustomContentView) {
-        [self addSubview:self.titleLabel];
-        [self addSubview:self.scrollView];
+        
+        // 添加基础子视图
+        [self addSubview:self.containerView];
+        [self.containerView addSubview:self.titleLabel];
+        [self.containerView addSubview:self.scrollView];
         [self.scrollView addSubview:self.contentLabel];
-    }
 
-    [self addSubview:self.cancelButton];
-    [self addSubview:self.otherButton];
-    [self addSubview:self.horizontalSeparator];
-    [self addSubview:self.verticalSeparator];
+        self.scrollHeightConstraint = [self.scrollView.heightAnchor constraintEqualToConstant:100];
+        [NSLayoutConstraint activateConstraints:@[
+            // containerView 约束
+            [self.containerView.topAnchor constraintEqualToAnchor:self.topAnchor constant:0],
+            [self.containerView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.contentLeftRightPadding],
+            [self.containerView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.contentLeftRightPadding],
+            [self.containerView.bottomAnchor constraintEqualToAnchor:self.buttonStackView.topAnchor constant:-0],
+            
+            // 1️⃣ titleLabel 约束
+            [self.titleLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:self.model.titleTopPadding],
+            [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.contentLeftRightPadding],
+            [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.contentLeftRightPadding],
+            
+            // 2️⃣ scrollView 初始高度约束（会在后面动态更新）
+            [self.scrollView.topAnchor constraintEqualToAnchor:self.titleLabel.bottomAnchor constant:self.model.titleBottomPadding],
+            [self.scrollView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.contentLeftRightPadding],
+            [self.scrollView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.contentLeftRightPadding],
+            self.scrollHeightConstraint,
+            
+            // 3️⃣ contentLabel 约束（填充 scrollView）
+            [self.contentLabel.topAnchor constraintEqualToAnchor:self.scrollView.topAnchor],
+            [self.contentLabel.leadingAnchor constraintEqualToAnchor:self.scrollView.leadingAnchor],
+            [self.contentLabel.trailingAnchor constraintEqualToAnchor:self.scrollView.trailingAnchor],
+            [self.contentLabel.bottomAnchor constraintEqualToAnchor:self.scrollView.bottomAnchor],
+            [self.contentLabel.widthAnchor constraintEqualToAnchor:self.scrollView.widthAnchor]
+        ]];
+        
+        // 4️⃣ 布局后更新 scrollView 高度 & 背景高度
+        [self layoutIfNeeded];
+        CGFloat contentWidth = CGRectGetWidth(self.scrollView.frame);
+        if (contentWidth == 0) contentWidth = self.model.width - self.model.contentLeftRightPadding * 2;
+
+        CGSize titleSize = [self.titleLabel sizeThatFits:CGSizeMake(contentWidth, CGFLOAT_MAX)];
+        CGFloat titleHeight = titleSize.height;
+        CGSize contentSize = [self.contentLabel sizeThatFits:CGSizeMake(contentWidth, CGFLOAT_MAX)];
+        CGFloat contentHeight = contentSize.height;
+
+        CGFloat screenH = UIScreen.mainScreen.bounds.size.height;
+        CGFloat maxTotalHeight = screenH * 2.0 / 3.0; // 屏幕三分之二高度
+        CGFloat totalHeight = self.model.titleTopPadding + titleHeight + self.model.titleBottomPadding + contentHeight + self.model.buttonTopPadding + self.model.buttonHeight + self.model.buttonBottomPadding;
+
+        BOOL contentTooLarge = totalHeight > maxTotalHeight;
+        BOOL contentTooSmall = totalHeight < self.model.height;
+
+        if (contentTooLarge) {
+            // 内容太大，限制最大高度，scrollView 启动滚动
+            self.scrollView.scrollEnabled = YES;
+            CGFloat availableScrollHeight = maxTotalHeight - self.model.titleTopPadding - titleHeight - self.model.titleBottomPadding - self.model.buttonTopPadding - self.model.buttonHeight;
+            self.scrollHeightConstraint.constant = availableScrollHeight;
+
+            self.heightConstraint.constant = maxTotalHeight;
+        } else if (contentTooSmall) {
+            self.scrollView.scrollEnabled = NO;
+            CGFloat availableScrollHeight = self.model.height - self.model.titleTopPadding - titleHeight - self.model.titleBottomPadding - self.model.buttonTopPadding - self.model.buttonHeight;
+
+            if (contentHeight < availableScrollHeight) {
+                self.scrollHeightConstraint.constant = contentHeight;
+            } else {
+                self.scrollHeightConstraint.constant = availableScrollHeight;
+            }
+
+            self.heightConstraint.constant = self.model.height;
+        } else {
+            // 内容合适，scrollView 高度为 contentHeight
+            self.scrollView.scrollEnabled = NO;
+            self.scrollHeightConstraint.constant = contentHeight;
+            
+            self.heightConstraint.constant = totalHeight;
+        }
+    }
+        
+    // buttonStackView 约束
+    [NSLayoutConstraint activateConstraints:@[
+        [self.buttonStackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.model.buttonLeftRightPadding],
+        [self.buttonStackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.model.buttonLeftRightPadding],
+        [self.buttonStackView.bottomAnchor constraintEqualToAnchor:self.bottomAnchor constant:-self.model.buttonBottomPadding],
+        // 添加默认高度约束
+        [self.buttonStackView.heightAnchor constraintEqualToConstant:self.model.buttonHeight]
+    ]];
+    
+    // 获取 1 像素高度（根据屏幕 scale 自适应）
+    CGFloat onePixel = 1.0 / [UIScreen mainScreen].scale;
+
+    if (self.model.buttonSpacing <= 0) {
+        
+        BOOL hasCancelButton = (self.model.cancelButtonTitle.length > 0);
+        BOOL hasOtherButton = (self.model.otherButtonTitle.length > 0);
+        
+        if (hasCancelButton || hasOtherButton) {
+            // 3️⃣ horizontalSeparator 约束（重写为与 buttonStackView 对齐，保证“1像素线”效果）
+            [NSLayoutConstraint activateConstraints:@[
+                // 宽度与 buttonStackView 一致
+                [self.horizontalSeparator.widthAnchor constraintEqualToAnchor:self.buttonStackView.widthAnchor],
+                // 高度为 1 像素
+                [self.horizontalSeparator.heightAnchor constraintEqualToConstant:onePixel],
+                // 底部对齐到 buttonStackView 顶部
+                [self.horizontalSeparator.bottomAnchor constraintEqualToAnchor:self.buttonStackView.topAnchor],
+                // 水平居中对齐 buttonStackView
+                [self.horizontalSeparator.centerXAnchor constraintEqualToAnchor:self.buttonStackView.centerXAnchor]
+            ]];
+        }
+        
+        if (hasCancelButton && hasOtherButton) {
+            // 4️⃣ verticalSeparator 约束（位于 buttonStackView 中间，保证“1像素线”效果）
+            [NSLayoutConstraint activateConstraints:@[
+                // 宽度为 1 像素
+                [self.verticalSeparator.widthAnchor constraintEqualToConstant:onePixel],
+                // 高度等于 buttonStackView 高度
+                [self.verticalSeparator.heightAnchor constraintEqualToAnchor:self.buttonStackView.heightAnchor],
+                // 垂直居中对齐 buttonStackView
+                [self.verticalSeparator.centerYAnchor constraintEqualToAnchor:self.buttonStackView.centerYAnchor],
+                // 水平居中对齐 buttonStackView
+                [self.verticalSeparator.centerXAnchor constraintEqualToAnchor:self.buttonStackView.centerXAnchor]
+            ]];
+        }
+    }
 
     // 🔍 打印最终 contentLabel 高度
     NSLog(@"[最终] contentLabel.frame = %@", NSStringFromCGRect(self.contentLabel.frame));
 }
 
-// 在窗口中显示弹窗
-- (void)show {
-        
-    // 如果需要在窗口中显示背景变暗效果
-    if (self.shouldDimBackgroundWhenShowInWindow) {
-        self.backgroundDimView = [[UIView alloc] initWithFrame:[ZHHAlertViewHelper keyWindow].bounds];
-        self.backgroundDimView.backgroundColor = [UIColor colorWithWhite:0 alpha:self.dimAlpha];
+#pragma mark - Public Show Methods
 
-        // 添加手势识别器，用于处理点击弹窗外部关闭弹窗的操作
-        UITapGestureRecognizer *outsideTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outsideTap:)];
-        [self.backgroundDimView addGestureRecognizer:outsideTapGesture];
-        [[ZHHAlertViewHelper keyWindow] addSubview:self.backgroundDimView];
+/// 显示弹窗（默认显示在 keyWindow 中）
+- (void)show {
+    // 检查是否需要在窗口中显示背景遮罩（背景变暗效果）
+    if (self.shouldDimBackgroundWhenShowInWindow) {
+        [self addBackgroundDimViewToView:[self keyWindow]];
     }
     
-    // 在窗口中显示弹窗视图
-    [self showInView:[ZHHAlertViewHelper keyWindow]];
+    // 调用核心显示逻辑，显示到 keyWindow 中
+    [self showInView:[self keyWindow]];
+}
+
+/// 显示弹窗到指定视图中
+/// @param view 目标父视图
+- (void)showInView:(UIView *)view {
+    // 设置标题和内容
+    self.titleLabel.text = self.model.title;
+    self.contentLabel.text = self.model.content;
+    
+    // 设置按钮容器的间距
+    self.buttonStackView.spacing = self.model.buttonSpacing;
+    
+    if (self.model.cancelButtonTitle.length > 0) {
+        [self.cancelButton setTitle:self.model.cancelButtonTitle forState:UIControlStateNormal];
+        [self.buttonStackView addArrangedSubview:self.cancelButton];
+    }
+
+    if (self.model.otherButtonTitle.length > 0) {
+        [self.otherButton setTitle:self.model.otherButtonTitle forState:UIControlStateNormal];
+        [self.buttonStackView addArrangedSubview:self.otherButton];
+    }
+    
+    // 添加弹窗视图到目标父视图
+    [view addSubview:self];
+
+    // 创建约束时
+    self.widthConstraint  = [self.widthAnchor constraintEqualToConstant:self.model.width];
+    self.heightConstraint = [self.heightAnchor constraintEqualToConstant:self.model.height];
+    
+    // 设置约束以居中显示弹窗（避免使用 frame）
+    self.translatesAutoresizingMaskIntoConstraints = NO;
+    [NSLayoutConstraint activateConstraints:@[
+        [self.centerXAnchor constraintEqualToAnchor:view.centerXAnchor],
+        [self.centerYAnchor constraintEqualToAnchor:view.centerYAnchor],
+        self.widthConstraint,
+        self.heightConstraint
+    ]];
+    
+    // 设置视图布局（调用布局和约束方法）
+    [self setupViews];
+
+    // 如果需要背景遮罩（非显示在 window 中时）
+    if (self.shouldDimBackgroundWhenShowInView && view != [self keyWindow]) {
+        [self addBackgroundDimViewToView:view];
+    }
+    
+    // 弹窗显示前的处理（如动画或初始化）
+    [self alertViewWillAppear];
+    
+    // 以动画形式显示弹窗视图
+    [self presentWithAnimation:view];
+}
+
+/// 添加背景遮罩视图到指定父视图
+- (void)addBackgroundDimViewToView:(UIView *)view {
+    self.backgroundDimView = [[UIView alloc] initWithFrame:view.bounds];
+    self.backgroundDimView.backgroundColor = [UIColor colorWithWhite:0 alpha:self.dimAlpha];
+
+    UITapGestureRecognizer *outsideTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(outsideTap:)];
+    [self.backgroundDimView addGestureRecognizer:outsideTapGesture];
+
+    if (view == [self keyWindow]) {
+        [view addSubview:self.backgroundDimView];
+    } else {
+        [view insertSubview:self.backgroundDimView belowSubview:self];
+    }
 }
 
 // 处理点击弹窗外部的手势事件
@@ -412,12 +363,10 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     }
 }
 
-// 将弹窗视图添加到指定视图中并执行显示动画
-- (void)addThisViewToView:(UIView *)view {
+// 以动画形式显示弹窗视图
+- (void)presentWithAnimation:(UIView *)view {
     NSTimeInterval timeAppear = (self.appearTime > 0) ? self.appearTime : 0.2; // 获取显示动画时间，默认0.2秒
     NSTimeInterval timeDelay = 0; // 动画延迟时间，默认无延迟
-
-    [view addSubview:self]; // 将弹窗视图添加到指定视图中
 
     // 根据不同的动画类型执行对应的显示动画
     switch (self.appearAnimationType) {
@@ -472,22 +421,37 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     }];
 }
 
-// 执行飞入动画
+// 执行飞入动画（使用 transform 避免 Auto Layout 冲突）
 - (void)performFlyInAnimationWithDirection:(ZHHAlertViewDirection)direction view:(UIView *)view duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    CGRect tmpFrame = self.frame;
-    
-    if (direction == ZHHAlertViewDirectionTop) {
-        self.frame = CGRectMake(self.frame.origin.x, -self.frame.size.height - 10, self.frame.size.width, self.frame.size.height);
-    } else if (direction == ZHHAlertViewDirectionBottom) {
-        self.frame = CGRectMake(self.frame.origin.x, view.frame.size.height + 10, self.frame.size.width, self.frame.size.height);
-    } else if (direction == ZHHAlertViewDirectionLeft) {
-        self.frame = CGRectMake(-self.frame.size.width - 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
-    } else if (direction == ZHHAlertViewDirectionRight) {
-        self.frame = CGRectMake(view.frame.size.width + 10, self.frame.origin.y, self.frame.size.width, self.frame.size.height);
+    // 计算初始偏移量
+    CGFloat offsetX = 0;
+    CGFloat offsetY = 0;
+
+    switch (direction) {
+        case ZHHAlertViewDirectionTop:
+            offsetY = -CGRectGetMaxY(self.frame) - 10;
+            break;
+        case ZHHAlertViewDirectionBottom:
+            offsetY = view.bounds.size.height - CGRectGetMinY(self.frame) + 10;
+            break;
+        case ZHHAlertViewDirectionLeft:
+            offsetX = -CGRectGetMaxX(self.frame) - 10;
+            break;
+        case ZHHAlertViewDirectionRight:
+            offsetX = view.bounds.size.width - CGRectGetMinX(self.frame) + 10;
+            break;
+        default:
+            break;
     }
 
+    // 从初始位置偏移（相对于 Auto Layout）
+    self.transform = CGAffineTransformMakeTranslation(offsetX, offsetY);
+    self.alpha = 0.0;
+
+    // 执行动画回归原位
     [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.frame = tmpFrame;
+        self.transform = CGAffineTransformIdentity;
+        self.alpha = 1.0;
     } completion:^(BOOL finished) {
         [self alertViewDidAppear];
     }];
@@ -562,65 +526,43 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 // 执行飞出动画
 - (void)performFlyOutAnimationWithDirection:(ZHHAlertViewDirection)direction duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    CGRect frame = self.frame;
-    if (direction == ZHHAlertViewDirectionTop) {
-        frame.origin.y = -frame.size.height - 10;
-    } else if (direction == ZHHAlertViewDirectionBottom) {
-        frame.origin.y = self.superview.frame.size.height + 10;
-    } else if (direction == ZHHAlertViewDirectionLeft) {
-        frame.origin.x = -frame.size.width - 10;
-    } else if (direction == ZHHAlertViewDirectionRight) {
-        frame.origin.x = self.superview.frame.size.width + 10;
+    // 计算偏移量
+    CGFloat offsetX = 0;
+    CGFloat offsetY = 0;
+
+    switch (direction) {
+        case ZHHAlertViewDirectionTop:
+            offsetY = -CGRectGetMaxY(self.frame) - 10;
+            break;
+        case ZHHAlertViewDirectionBottom:
+            offsetY = self.superview.bounds.size.height - CGRectGetMinY(self.frame) + 10;
+            break;
+        case ZHHAlertViewDirectionLeft:
+            offsetX = -CGRectGetMaxX(self.frame) - 10;
+            break;
+        case ZHHAlertViewDirectionRight:
+            offsetX = self.superview.bounds.size.width - CGRectGetMinX(self.frame) + 10;
+            break;
+        default:
+            break;
     }
 
+    // 开始动画：使用 transform 避免与 Auto Layout 冲突
     [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.frame = frame;
+        self.transform = CGAffineTransformMakeTranslation(offsetX, offsetY);
+        self.alpha = 0.0; // 同时淡出更自然
     } completion:^(BOOL finished) {
         [self removeFromSuperview];
     }];
 }
 
-#pragma mark - Touch Event
-
-// 处理取消按钮按下事件
-- (void)cancelButtonTouchBegan:(id)sender {
-    // 保存取消按钮的原始背景颜色，并将其背景颜色设置为透明度为0.1的颜色，以便在按钮被按下时显示效果
-    self.originalCancelButtonColor = [self.cancelButton.backgroundColor colorWithAlphaComponent:0];
-    self.cancelButton.backgroundColor = [self.cancelButton.backgroundColor colorWithAlphaComponent:.1];
-}
-
-// 处理取消按钮抬起事件
-- (void)cancelButtonTouchEnded:(id)sender {
-    // 恢复取消按钮的背景颜色
-    self.cancelButton.backgroundColor = self.originalCancelButtonColor;
-}
-
-// 处理其他按钮按下事件
-- (void)otherButtonTouchBegan:(id)sender {
-    // 保存其他按钮的原始背景颜色，并将其背景颜色设置为透明度为0.1的颜色，以便在按钮被按下时显示效果
-    self.originalOtherButtonColor = [self.otherButton.backgroundColor colorWithAlphaComponent:0];
-    self.otherButton.backgroundColor = [self.otherButton.backgroundColor colorWithAlphaComponent:.1];
-}
-
-// 处理其他按钮抬起事件
-- (void)otherButtonTouchEnded:(id)sender {
-    // 恢复其他按钮的背景颜色
-    self.otherButton.backgroundColor = self.originalOtherButtonColor;
-}
-
 #pragma mark - 按钮点击事件处理
-
-// 设置取消按钮和其他按钮的点击处理块
-- (void)actionWithBlocksCancelButtonHandler:(void (^)(void))cancelHandler otherButtonHandler:(void (^)(void))otherHandler {
-    self.cancelButtonAction = cancelHandler;
-    self.otherButtonAction = otherHandler;
-}
 
 // 处理取消按钮点击事件
 - (void)cancelButtonClicked:(id)sender {
     // 如果设置了点击高亮效果，应用高亮效果
     if (self.shouldHighlightButtonOnClick) {
-        [ZHHAlertViewHelper applyHighlightEffectToButton:self.cancelButton];
+        [self setButtonHighlightEffect:self.cancelButton];
     }
 
     // 关闭视图
@@ -641,7 +583,7 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 - (void)otherButtonClicked:(id)sender {
     // 如果设置了点击高亮效果，应用高亮效果
     if (self.shouldHighlightButtonOnClick) {
-        [ZHHAlertViewHelper applyHighlightEffectToButton:self.otherButton];
+        [self setButtonHighlightEffect:self.otherButton];
     }
     
     // 根据设置判断是否关闭弹窗
@@ -674,87 +616,156 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     }
 }
 
+#pragma mark - Lazy Load Views
+
+/// 容器视图（承载标题、内容、按钮）
+- (UIView *)containerView {
+    if (!_containerView) {
+        _containerView = [[UIView alloc] init];
+        _containerView.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _containerView;
+}
+
+/// 标题标签
 - (UILabel *)titleLabel {
     if (!_titleLabel) {
         _titleLabel = [[UILabel alloc] init];
         _titleLabel.numberOfLines = 0;
         _titleLabel.font = [UIFont boldSystemFontOfSize:17];
-        _titleLabel.text = self.title;
         _titleLabel.textAlignment = NSTextAlignmentCenter;
-        _titleLabel.textColor = [UIColor blackColor];
-        _titleLabel.backgroundColor = [UIColor clearColor];
+        _titleLabel.textColor = UIColor.blackColor;
+        _titleLabel.backgroundColor = UIColor.clearColor;
+        _titleLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _titleLabel;
 }
 
+/// 内容滚动视图（用于展示较长文本）
 - (UIScrollView *)scrollView {
     if (!_scrollView) {
         _scrollView = [[UIScrollView alloc] init];
         _scrollView.delegate = self;
         _scrollView.bounces = YES;
+        _scrollView.alwaysBounceVertical = YES;
+        _scrollView.showsVerticalScrollIndicator = NO;
+        _scrollView.contentInset = UIEdgeInsetsZero;
         _scrollView.backgroundColor = UIColor.clearColor;
-        _scrollView.alwaysBounceVertical = YES; // 允许垂直方向上的弹性滚动
-        _scrollView.showsVerticalScrollIndicator = NO; // 隐藏垂直滚动条
-        _scrollView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
         _scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        _scrollView.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _scrollView;
 }
 
+/// 内容标签
 - (UILabel *)contentLabel {
     if (!_contentLabel) {
         _contentLabel = [[UILabel alloc] init];
-        // 设置消息标签
         _contentLabel.numberOfLines = 0;
-        _contentLabel.font = [UIFont systemFontOfSize:13];
-//        if (!self.title) {
-//            self.contentLabel.font = self.titleLabel.font;
-//        }
-        _contentLabel.text = self.content;
+        _contentLabel.font = [UIFont systemFontOfSize:15];
         _contentLabel.textAlignment = NSTextAlignmentCenter;
-        _contentLabel.textColor = [UIColor blackColor];
-        _contentLabel.backgroundColor = [UIColor clearColor];
+        _contentLabel.textColor = UIColor.grayColor;
+        _contentLabel.backgroundColor = UIColor.clearColor;
+        _contentLabel.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _contentLabel;
 }
 
+/// 按钮容器栈视图
+- (UIStackView *)buttonStackView {
+    if (!_buttonStackView) {
+        _buttonStackView = [[UIStackView alloc] init];
+        _buttonStackView.axis = UILayoutConstraintAxisHorizontal;// 水平方向
+        _buttonStackView.distribution = UIStackViewDistributionFillEqually;// 均分宽度
+        _buttonStackView.alignment = UIStackViewAlignmentFill;// 让子视图填充高度
+        _buttonStackView.spacing = 0;// 按钮之间的间距
+        _buttonStackView.translatesAutoresizingMaskIntoConstraints = NO;
+    }
+    return _buttonStackView;
+}
+
+/// 取消按钮
 - (UIButton *)cancelButton {
     if (!_cancelButton) {
         _cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_cancelButton setTitleColor:[UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
         _cancelButton.titleLabel.font = [UIFont systemFontOfSize:17];
-        [_cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
-        
-        [_cancelButton setBackgroundImage:[ZHHAlertViewHelper imageNamed:@"divider_highlighted"] forState:UIControlStateHighlighted];
+        [_cancelButton setBackgroundImage:[self imageNamed:@"divider_highlighted"] forState:UIControlStateHighlighted];
         [_cancelButton addTarget:self action:@selector(cancelButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        _cancelButton.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _cancelButton;
 }
 
+/// 其他按钮
 - (UIButton *)otherButton {
     if (!_otherButton) {
         _otherButton = [UIButton buttonWithType:UIButtonTypeCustom];
         [_otherButton setTitleColor:[UIColor colorWithRed:0 green:0.478431 blue:1.0 alpha:1.0] forState:UIControlStateNormal];
         _otherButton.titleLabel.font = [UIFont systemFontOfSize:17];
-        [_otherButton setTitle:self.otherButtonTitle forState:UIControlStateNormal];
-        [_otherButton setBackgroundImage:[ZHHAlertViewHelper imageNamed:@"divider_highlighted"] forState:UIControlStateHighlighted];
+        [_otherButton setBackgroundImage:[self imageNamed:@"divider_highlighted"] forState:UIControlStateHighlighted];
         [_otherButton addTarget:self action:@selector(otherButtonClicked:) forControlEvents:UIControlEventTouchUpInside];
+        _otherButton.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _otherButton;
 }
 
+/// 横向分割线（按钮上方）
 - (UIView *)horizontalSeparator {
     if (!_horizontalSeparator) {
         _horizontalSeparator = [[UIView alloc] init];
+        _horizontalSeparator.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _horizontalSeparator;
 }
 
+/// 纵向分割线（两个按钮之间）
 - (UIView *)verticalSeparator {
     if (!_verticalSeparator) {
         _verticalSeparator = [[UIView alloc] init];
+        _verticalSeparator.translatesAutoresizingMaskIntoConstraints = NO;
     }
     return _verticalSeparator;
 }
 
+#pragma mark - 私有方法
+
+- (UIColor *)colorWithLightColor:(UIColor *)lightColor darkColor:(UIColor *)darkColor {
+    return [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traitCollection) {
+        if (traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            return darkColor;  // 返回暗黑模式颜色
+        } else {
+            return lightColor; // 返回浅色模式颜色
+        }
+    }];
+}
+
+// 获取当前的 keyWindow
+- (UIWindow *)keyWindow {
+    for (UIWindowScene *scene in [UIApplication sharedApplication].connectedScenes) {
+        if (scene.activationState == UISceneActivationStateForegroundActive &&
+            [scene isKindOfClass:[UIWindowScene class]]) {
+            return scene.windows.firstObject;
+        }
+    }
+    return nil;
+}
+
+// 为按钮添加点击高亮效果
+- (void)setButtonHighlightEffect:(UIButton *)button {
+    // 添加点击高亮效果：设置背景颜色透明度为 0.1，并在 0.2 秒后还原
+    UIColor *originColor = [button.backgroundColor colorWithAlphaComponent:0];
+    button.backgroundColor = [button.backgroundColor colorWithAlphaComponent:0.1];
+
+    // 延时恢复原始颜色
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        button.backgroundColor = originColor;
+    });
+}
+
+- (UIImage *)imageNamed:(NSString *)imageName {
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    UIImage *image = [UIImage imageNamed:imageName inBundle:bundle compatibleWithTraitCollection:nil];
+    return image;
+}
 @end

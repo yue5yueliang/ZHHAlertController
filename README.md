@@ -13,6 +13,15 @@
 - ✅ **Auto Layout**：基于 Auto Layout 实现，适配各种屏幕尺寸
 - ✅ **简单易用**：API 设计简洁，易于集成和使用
 
+## 截图
+
+<div align="center">
+  <img src="screenshots/screenshot_main.png" width="30%" alt="主界面" />
+  <img src="screenshots/screenshot_basic.png" width="30%" alt="基础示例" />
+  <img src="screenshots/screenshot_custom.png" width="30%" alt="自定义样式" />
+  <img src="screenshots/screenshot_long_text.png" width="30%" alt="长文本示例" />
+</div>
+
 ## 安装
 
 ### CocoaPods

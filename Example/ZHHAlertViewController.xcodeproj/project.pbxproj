@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		187F61812890DF6E007A886F /* ZHHHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 187F61802890DF6E007A886F /* ZHHHelper.m */; };
 		5F775898929AA26DBB090330 /* Pods_ZHHAlertViewController_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4158A4D502DBE52B8B640307 /* Pods_ZHHAlertViewController_Tests.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
@@ -23,6 +22,7 @@
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
+		7EA7877E2F1B5831006E1C04 /* ZHHAlertExample.m in Sources */ = {isa = PBXBuildFile; fileRef = 7EA7877D2F1B5831006E1C04 /* ZHHAlertExample.m */; };
 		86ED4786AC84BBE821F0938D /* Pods_ZHHAlertViewController_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E72D0168668E7CD2D665272F /* Pods_ZHHAlertViewController_Example.framework */; };
 /* End PBXBuildFile section */
 
@@ -37,8 +37,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		187F617F2890DF6E007A886F /* ZHHHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHHHelper.h; sourceTree = "<group>"; };
-		187F61802890DF6E007A886F /* ZHHHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZHHHelper.m; sourceTree = "<group>"; };
 		3A282DD359FC323D7F764FC7 /* ZHHAlertViewController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ZHHAlertViewController.podspec; path = ../ZHHAlertViewController.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		4158A4D502DBE52B8B640307 /* Pods_ZHHAlertViewController_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZHHAlertViewController_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* ZHHAlertViewController_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZHHAlertViewController_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -63,6 +61,8 @@
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		737C884B57FF0F83382A6EA6 /* Pods-ZHHAlertViewController_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Example.release.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Example/Pods-ZHHAlertViewController_Example.release.xcconfig"; sourceTree = "<group>"; };
 		7C71B65794B8B9516342833D /* Pods-ZHHAlertViewController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Example.debug.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Example/Pods-ZHHAlertViewController_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		7EA7877C2F1B5831006E1C04 /* ZHHAlertExample.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZHHAlertExample.h; sourceTree = "<group>"; };
+		7EA7877D2F1B5831006E1C04 /* ZHHAlertExample.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ZHHAlertExample.m; sourceTree = "<group>"; };
 		972228C83DB0F56875767958 /* Pods-ZHHAlertViewController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Tests.debug.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Tests/Pods-ZHHAlertViewController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		A42B706C35234D8E2074CCAA /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B5E91CB64A5BEAEB50C1EB74 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
@@ -99,10 +99,10 @@
 		187F61822890DF7C007A886F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				7EA7877C2F1B5831006E1C04 /* ZHHAlertExample.h */,
+				7EA7877D2F1B5831006E1C04 /* ZHHAlertExample.m */,
 				6003F5A5195388D20070C39A /* ZHHViewController.h */,
 				6003F5A6195388D20070C39A /* ZHHViewController.m */,
-				187F617F2890DF6E007A886F /* ZHHHelper.h */,
-				187F61802890DF6E007A886F /* ZHHHelper.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -258,9 +258,6 @@
 				LastUpgradeCheck = 1540;
 				ORGANIZATIONNAME = "宁小陌y";
 				TargetAttributes = {
-					6003F589195388D20070C39A = {
-						DevelopmentTeam = VAU24NCP22;
-					};
 					6003F5AD195388D20070C39A = {
 						TestTargetID = 6003F589195388D20070C39A;
 					};
@@ -380,9 +377,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				187F61812890DF6E007A886F /* ZHHHelper.m in Sources */,
 				6003F59E195388D20070C39A /* ZHHAppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* ZHHViewController.m in Sources */,
+				7EA7877E2F1B5831006E1C04 /* ZHHAlertExample.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -543,7 +540,7 @@
 			baseConfigurationReference = 7C71B65794B8B9516342833D /* Pods-ZHHAlertViewController_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = VAU24NCP22;
+				DEVELOPMENT_TEAM = C7337H3ZTV;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ZHHAlertViewController/ZHHAlertViewController-Prefix.pch";
@@ -562,7 +559,7 @@
 			baseConfigurationReference = 737C884B57FF0F83382A6EA6 /* Pods-ZHHAlertViewController_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = VAU24NCP22;
+				DEVELOPMENT_TEAM = C7337H3ZTV;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ZHHAlertViewController/ZHHAlertViewController-Prefix.pch";
@@ -581,6 +578,7 @@
 			baseConfigurationReference = 972228C83DB0F56875767958 /* Pods-ZHHAlertViewController_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = C7337H3ZTV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -607,6 +605,7 @@
 			baseConfigurationReference = CE5A789C7CAC882DFD0DC9E4 /* Pods-ZHHAlertViewController_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = C7337H3ZTV;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
 					"$(inherited)",

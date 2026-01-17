@@ -8,15 +8,6 @@
 
 #import "ZHHAlertViewController.h"
 
-// 枚举化方向，避免字符串对比
-typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
-    ZHHAlertViewDirectionTop,
-    ZHHAlertViewDirectionBottom,
-    ZHHAlertViewDirectionLeft,
-    ZHHAlertViewDirectionRight
-};
-
-
 @interface ZHHAlertViewController () <UIScrollViewDelegate> {
     // 状态标识
     BOOL hasCustomContentView; ///< 是否自定义设置了 contentView
@@ -24,10 +15,6 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 // 弹窗容器视图（包含 titleLabel, scrollView 等内容）
 @property (nonatomic, strong) UIView *containerView;
-
-//// 弹窗尺寸缓存
-//@property (nonatomic, assign) CGFloat width;    ///< 弹窗宽度
-//@property (nonatomic, assign) CGFloat height;   ///< 弹窗高度
 
 // 按钮视图
 @property (nonatomic, strong) UIStackView *buttonStackView; ///< 按钮容器（使用 UIStackView 实现）
@@ -40,9 +27,17 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 // 内容滚动视图
 @property (nonatomic, strong, readwrite) UIScrollView *scrollView;
 
+// 滚动阴影层
+@property (nonatomic, strong) CAGradientLayer *topShadowLayer;      ///< 顶部阴影渐变层
+@property (nonatomic, strong) CAGradientLayer *bottomShadowLayer;   ///< 底部阴影渐变层
+
 @property (nonatomic, strong) NSLayoutConstraint *widthConstraint;   ///< 自身宽度约束
 @property (nonatomic, strong) NSLayoutConstraint *heightConstraint;  ///< 自身高度约束
 @property (nonatomic, strong) NSLayoutConstraint *scrollHeightConstraint;  ///< content内容高度约束
+@property (nonatomic, strong) NSLayoutConstraint *scrollViewTopConstraint; ///< scrollView 顶部约束
+@property (nonatomic, strong) NSLayoutConstraint *centerXConstraint; ///< 水平居中约束
+@property (nonatomic, strong) NSLayoutConstraint *centerYConstraint; ///< 垂直居中约束
+@property (nonatomic, assign) BOOL isShowing; ///< 是否正在显示
 
 @end
 
@@ -100,9 +95,8 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     self.shouldDismissOnOutsideTapped = NO;             // 点击外部是否关闭，默认 NO
 
     /// 背景配置
-    self.shouldDimBackgroundWhenShowInView = YES;       // 是否在视图中禁用模糊背景，默认 NO
     self.shouldDimBackgroundWhenShowInWindow = YES;     // 弹窗在 window 时背景变暗，默认 YES
-    self.shouldDimBackgroundWhenShowInView = NO;        // 弹窗在 view 中背景变暗，默认 NO
+    self.shouldDimBackgroundWhenShowInView = NO;        // 是否在视图中禁用模糊背景，默认 NO
     self.dimAlpha = 0.4;                                // 背景遮罩透明度，默认 0.4
 
     /// 基础属性
@@ -127,17 +121,26 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 - (void)setupViews {
     self.layer.cornerRadius = self.cornerRadius;
-    [self addSubview:self.buttonStackView];
-    if (self.buttonSpacing <= 0 && (self.cancelButtonTitle.length > 0 || self.otherButtonTitle.length > 0)) {
-        [self addSubview:self.horizontalSeparator];
+    
+    // 避免重复添加子视图
+    if (!self.buttonStackView.superview) {
+        [self addSubview:self.buttonStackView];
     }
     
-    if (self.buttonSpacing <= 0 && (self.cancelButtonTitle.length > 0 && self.otherButtonTitle.length > 0)) {
-        [self addSubview:self.verticalSeparator];
+    BOOL hasCancelButton = (self.cancelButtonTitle.length > 0);
+    BOOL hasOtherButton = (self.otherButtonTitle.length > 0);
+    
+    if (self.buttonSpacing <= 0 && (hasCancelButton || hasOtherButton)) {
+        if (!self.horizontalSeparator.superview) {
+            [self addSubview:self.horizontalSeparator];
+        }
     }
-
-    // 🔍 打印初始 contentLabel 高度
-    NSLog(@"[初始] contentLabel.frame = %@", NSStringFromCGRect(self.frame));
+    
+    if (self.buttonSpacing <= 0 && hasCancelButton && hasOtherButton) {
+        if (!self.verticalSeparator.superview) {
+            [self addSubview:self.verticalSeparator];
+        }
+    }
 
     // 设置分割线颜色
     UIColor *sepColor = self.separatorColor ?: [UIColor separatorColor];
@@ -147,13 +150,28 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     // 如果是自定义视图则不添加以下子视图
     if (!hasCustomContentView) {
         
-        // 添加基础子视图
-        [self addSubview:self.containerView];
-        [self.containerView addSubview:self.titleLabel];
-        [self.containerView addSubview:self.scrollView];
-        [self.scrollView addSubview:self.contentLabel];
+        // 避免重复添加基础子视图
+        if (!self.containerView.superview) {
+            [self addSubview:self.containerView];
+        }
+        if (!self.titleLabel.superview) {
+            [self.containerView addSubview:self.titleLabel];
+        }
+        if (!self.scrollView.superview) {
+            [self.containerView addSubview:self.scrollView];
+        }
+        if (!self.contentLabel.superview) {
+            [self.scrollView addSubview:self.contentLabel];
+        }
+        
+        // 设置阴影层
+        [self setupShadowLayers];
 
         self.scrollHeightConstraint = [self.scrollView.heightAnchor constraintEqualToConstant:100];
+        
+        // 创建 scrollView 的顶部约束（将在布局后根据是否有标题动态调整）
+        self.scrollViewTopConstraint = [self.scrollView.topAnchor constraintEqualToAnchor:self.titleLabel.bottomAnchor constant:self.titleBottomPadding];
+        
         [NSLayoutConstraint activateConstraints:@[
             // containerView 约束
             [self.containerView.topAnchor constraintEqualToAnchor:self.topAnchor constant:0],
@@ -161,18 +179,18 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
             [self.containerView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.contentLeftRightPadding],
             [self.containerView.bottomAnchor constraintEqualToAnchor:self.buttonStackView.topAnchor constant:-0],
             
-            // 1️⃣ titleLabel 约束
+            // titleLabel 约束
             [self.titleLabel.topAnchor constraintEqualToAnchor:self.topAnchor constant:self.titleTopPadding],
             [self.titleLabel.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.contentLeftRightPadding],
             [self.titleLabel.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.contentLeftRightPadding],
             
-            // 2️⃣ scrollView 初始高度约束（会在后面动态更新）
-            [self.scrollView.topAnchor constraintEqualToAnchor:self.titleLabel.bottomAnchor constant:self.titleBottomPadding],
+            // scrollView 约束（顶部约束将根据是否有标题动态调整）
+            self.scrollViewTopConstraint,
             [self.scrollView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:self.contentLeftRightPadding],
             [self.scrollView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-self.contentLeftRightPadding],
             self.scrollHeightConstraint,
             
-            // 3️⃣ contentLabel 约束（填充 scrollView）
+            // contentLabel 约束（填充 scrollView）
             [self.contentLabel.topAnchor constraintEqualToAnchor:self.scrollView.topAnchor],
             [self.contentLabel.leadingAnchor constraintEqualToAnchor:self.scrollView.leadingAnchor],
             [self.contentLabel.trailingAnchor constraintEqualToAnchor:self.scrollView.trailingAnchor],
@@ -180,19 +198,31 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
             [self.contentLabel.widthAnchor constraintEqualToAnchor:self.scrollView.widthAnchor]
         ]];
         
-        // 4️⃣ 布局后更新 scrollView 高度 & 背景高度
+        // 布局后更新 scrollView 高度 & 背景高度
         [self layoutIfNeeded];
         CGFloat contentWidth = CGRectGetWidth(self.scrollView.frame);
         if (contentWidth == 0) contentWidth = self.width - self.contentLeftRightPadding * 2;
 
         CGSize titleSize = [self.titleLabel sizeThatFits:CGSizeMake(contentWidth, CGFLOAT_MAX)];
         CGFloat titleHeight = titleSize.height;
+        BOOL hasTitle = (self.title.length > 0 && titleHeight > 0);
+        
+        // 如果标题为空，调整 scrollView 的顶部约束，使其直接贴顶（使用 titleTopPadding 作为内容的顶部间距）
+        if (!hasTitle) {
+            [self.scrollViewTopConstraint setActive:NO];
+            self.scrollViewTopConstraint = [self.scrollView.topAnchor constraintEqualToAnchor:self.topAnchor constant:self.titleTopPadding];
+            [self.scrollViewTopConstraint setActive:YES];
+        }
+        
         CGSize contentSize = [self.contentLabel sizeThatFits:CGSizeMake(contentWidth, CGFLOAT_MAX)];
         CGFloat contentHeight = contentSize.height;
 
         CGFloat screenH = UIScreen.mainScreen.bounds.size.height;
         CGFloat maxTotalHeight = screenH * 2.0 / 3.0; // 屏幕三分之二高度
-        CGFloat totalHeight = self.titleTopPadding + titleHeight + self.titleBottomPadding + contentHeight + self.buttonTopPadding + self.buttonHeight + self.buttonBottomPadding;
+        
+        // 如果标题为空，不应用 titleBottomPadding，且 titleHeight 为 0
+        CGFloat actualTitleBottomPadding = hasTitle ? self.titleBottomPadding : 0;
+        CGFloat totalHeight = self.titleTopPadding + titleHeight + actualTitleBottomPadding + contentHeight + self.buttonTopPadding + self.buttonHeight + self.buttonBottomPadding;
 
         BOOL contentTooLarge = totalHeight > maxTotalHeight;
         BOOL contentTooSmall = totalHeight < self.height;
@@ -200,13 +230,13 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
         if (contentTooLarge) {
             // 内容太大，限制最大高度，scrollView 启动滚动
             self.scrollView.scrollEnabled = YES;
-            CGFloat availableScrollHeight = maxTotalHeight - self.titleTopPadding - titleHeight - self.titleBottomPadding - self.buttonTopPadding - self.buttonHeight;
+            CGFloat availableScrollHeight = maxTotalHeight - self.titleTopPadding - titleHeight - actualTitleBottomPadding - self.buttonTopPadding - self.buttonHeight;
             self.scrollHeightConstraint.constant = availableScrollHeight;
 
             self.heightConstraint.constant = maxTotalHeight;
         } else if (contentTooSmall) {
             self.scrollView.scrollEnabled = NO;
-            CGFloat availableScrollHeight = self.height - self.titleTopPadding - titleHeight - self.titleBottomPadding - self.buttonTopPadding - self.buttonHeight;
+            CGFloat availableScrollHeight = self.height - self.titleTopPadding - titleHeight - actualTitleBottomPadding - self.buttonTopPadding - self.buttonHeight;
 
             if (contentHeight < availableScrollHeight) {
                 self.scrollHeightConstraint.constant = contentHeight;
@@ -222,6 +252,10 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
             
             self.heightConstraint.constant = totalHeight;
         }
+        
+        // 布局完成后，更新阴影层的位置和显示状态
+        [self layoutIfNeeded];
+        [self updateShadowLayers];
     }
         
     // buttonStackView 约束
@@ -236,13 +270,11 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     // 获取 1 像素高度（根据屏幕 scale 自适应）
     CGFloat onePixel = 1.0 / [UIScreen mainScreen].scale;
 
+    // 当按钮间距为 0 或小于 0 时，需要添加分隔线来分隔按钮区域
     if (self.buttonSpacing <= 0) {
-        
-        BOOL hasCancelButton = (self.cancelButtonTitle.length > 0);
-        BOOL hasOtherButton = (self.otherButtonTitle.length > 0);
-        
+        // 如果有至少一个按钮，添加水平分隔线（位于按钮上方）
         if (hasCancelButton || hasOtherButton) {
-            // 3️⃣ horizontalSeparator 约束（重写为与 buttonStackView 对齐，保证“1像素线”效果）
+            // horizontalSeparator 约束（重写为与 buttonStackView 对齐，保证“1像素线”效果）
             [NSLayoutConstraint activateConstraints:@[
                 // 宽度与 buttonStackView 一致
                 [self.horizontalSeparator.widthAnchor constraintEqualToAnchor:self.buttonStackView.widthAnchor],
@@ -255,8 +287,9 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
             ]];
         }
         
+        // 如果同时有两个按钮，添加垂直分隔线（位于两个按钮中间）
         if (hasCancelButton && hasOtherButton) {
-            // 4️⃣ verticalSeparator 约束（位于 buttonStackView 中间，保证“1像素线”效果）
+            // verticalSeparator 约束（位于 buttonStackView 中间，保证“1像素线”效果）
             [NSLayoutConstraint activateConstraints:@[
                 // 宽度为 1 像素
                 [self.verticalSeparator.widthAnchor constraintEqualToConstant:onePixel],
@@ -269,59 +302,129 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
             ]];
         }
     }
-
-    // 🔍 打印最终 contentLabel 高度
-    NSLog(@"[最终] contentLabel.frame = %@", NSStringFromCGRect(self.contentLabel.frame));
 }
 
 #pragma mark - Public Show Methods
 
 /// 显示弹窗（默认显示在 keyWindow 中）
 - (void)show {
+    UIWindow *window = [self keyWindow];
+    if (!window) {
+        NSLog(@"⚠️ [ZHHAlertViewController] show: 无法获取 keyWindow");
+        return;
+    }
+    
     // 检查是否需要在窗口中显示背景遮罩（背景变暗效果）
     if (self.shouldDimBackgroundWhenShowInWindow) {
-        [self addBackgroundDimViewToView:[self keyWindow]];
+        [self addBackgroundDimViewToView:window];
     }
     
     // 调用核心显示逻辑，显示到 keyWindow 中
-    [self showInView:[self keyWindow]];
+    [self showInView:window];
 }
 
 /// 显示弹窗到指定视图中
 /// @param view 目标父视图
 - (void)showInView:(UIView *)view {
+    // 空值检查
+    if (!view) {
+        NSLog(@"⚠️ [ZHHAlertViewController] showInView: view 不能为 nil");
+        return;
+    }
+    
+    // 如果已经显示，先移除旧的约束和视图
+    if (self.isShowing) {
+        [self removeFromSuperview];
+        if (self.backgroundDimView) {
+            [self.backgroundDimView removeFromSuperview];
+            self.backgroundDimView = nil;
+        }
+        // 移除旧的约束
+        if (self.widthConstraint) {
+            [self.widthConstraint setActive:NO];
+        }
+        if (self.heightConstraint) {
+            [self.heightConstraint setActive:NO];
+        }
+        if (self.centerXConstraint) {
+            [self.centerXConstraint setActive:NO];
+        }
+        if (self.centerYConstraint) {
+            [self.centerYConstraint setActive:NO];
+        }
+        if (self.scrollViewTopConstraint) {
+            [self.scrollViewTopConstraint setActive:NO];
+        }
+        if (self.scrollHeightConstraint) {
+            [self.scrollHeightConstraint setActive:NO];
+        }
+    }
+    
+    // 清除按钮容器中的旧按钮（避免重复添加）
+    for (UIView *subview in self.buttonStackView.arrangedSubviews) {
+        [self.buttonStackView removeArrangedSubview:subview];
+        [subview removeFromSuperview];
+    }
+    
     // 设置标题和内容
     self.titleLabel.text = self.title;
     self.contentLabel.text = self.content;
     
+    // 内容更新后，延迟更新阴影层（等待布局完成）
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self updateShadowLayers];
+    });
+    
     // 设置按钮容器的间距
     self.buttonStackView.spacing = self.buttonSpacing;
     
-    if (self.cancelButtonTitle.length > 0) {
-        [self.cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
-        [self.buttonStackView addArrangedSubview:self.cancelButton];
-    }
-
-    if (self.otherButtonTitle.length > 0) {
-        [self.otherButton setTitle:self.otherButtonTitle forState:UIControlStateNormal];
-        [self.buttonStackView addArrangedSubview:self.otherButton];
+    // 根据 cancelButtonPositionRight 决定按钮顺序
+    if (self.cancelButtonTitle.length > 0 && self.otherButtonTitle.length > 0) {
+        if (self.cancelButtonPositionRight) {
+            // 取消按钮在右侧：先添加 otherButton，再添加 cancelButton
+            [self.otherButton setTitle:self.otherButtonTitle forState:UIControlStateNormal];
+            [self.buttonStackView addArrangedSubview:self.otherButton];
+            [self.cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
+            [self.buttonStackView addArrangedSubview:self.cancelButton];
+        } else {
+            // 取消按钮在左侧：先添加 cancelButton，再添加 otherButton
+            [self.cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
+            [self.buttonStackView addArrangedSubview:self.cancelButton];
+            [self.otherButton setTitle:self.otherButtonTitle forState:UIControlStateNormal];
+            [self.buttonStackView addArrangedSubview:self.otherButton];
+        }
+    } else {
+        // 只有一个按钮的情况
+        if (self.cancelButtonTitle.length > 0) {
+            [self.cancelButton setTitle:self.cancelButtonTitle forState:UIControlStateNormal];
+            [self.buttonStackView addArrangedSubview:self.cancelButton];
+        }
+        if (self.otherButtonTitle.length > 0) {
+            [self.otherButton setTitle:self.otherButtonTitle forState:UIControlStateNormal];
+            [self.buttonStackView addArrangedSubview:self.otherButton];
+        }
     }
     
     // 添加弹窗视图到目标父视图
     [view addSubview:self];
 
-    // 创建约束时
+    // 创建约束
     self.widthConstraint  = [self.widthAnchor constraintEqualToConstant:self.width];
     self.heightConstraint = [self.heightAnchor constraintEqualToConstant:self.height];
+    self.centerXConstraint = [self.centerXAnchor constraintEqualToAnchor:view.centerXAnchor];
+    self.centerYConstraint = [self.centerYAnchor constraintEqualToAnchor:view.centerYAnchor];
     
     // 设置约束以居中显示弹窗（避免使用 frame）
     self.translatesAutoresizingMaskIntoConstraints = NO;
     [NSLayoutConstraint activateConstraints:@[
-        [self.centerXAnchor constraintEqualToAnchor:view.centerXAnchor],
-        [self.centerYAnchor constraintEqualToAnchor:view.centerYAnchor],
+        self.centerXConstraint,
+        self.centerYConstraint,
         self.widthConstraint,
         self.heightConstraint
     ]];
+    
+    // 标记为正在显示
+    self.isShowing = YES;
     
     // 设置视图布局（调用布局和约束方法）
     [self setupViews];
@@ -370,24 +473,6 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
         case ZHHAlertViewAnimationTypeDefault:
             [self performScaleAnimationWithScale:1.1 duration:timeAppear delay:timeDelay];
             break;
-        case ZHHAlertViewAnimationTypeZoomIn:
-            [self performScaleAnimationWithScale:0.01 duration:timeAppear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFadeIn:
-            [self performFadeInAnimationWithDuration:timeAppear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyTop:
-            [self performFlyInAnimationWithDirection:ZHHAlertViewDirectionTop view:view duration:timeAppear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyBottom:
-            [self performFlyInAnimationWithDirection:ZHHAlertViewDirectionBottom view:view duration:timeAppear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyLeft:
-            [self performFlyInAnimationWithDirection:ZHHAlertViewDirectionLeft view:view duration:timeAppear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyRight:
-            [self performFlyInAnimationWithDirection:ZHHAlertViewDirectionRight view:view duration:timeAppear delay:timeDelay];
-            break;
         case ZHHAlertViewAnimationTypeNone:
             [self alertViewDidAppear]; // 无动画，直接显示视图
             break;
@@ -398,6 +483,7 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 // 执行缩放动画
 - (void)performScaleAnimationWithScale:(CGFloat)scale duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
+    // 显示动画：从放大缩小到正常大小，并渐显
     self.transform = CGAffineTransformMakeScale(scale, scale);
     self.alpha = 0.6;
     [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
@@ -408,82 +494,41 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     }];
 }
 
-// 执行渐显动画
-- (void)performFadeInAnimationWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    self.alpha = 0;
-    [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.alpha = 1;
+// 执行消失缩放动画
+- (void)performScaleOutAnimationWithScale:(CGFloat)scale duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
+    // 消失动画：从正常大小放大，并渐隐
+    self.transform = CGAffineTransformIdentity;
+    self.alpha = 1.0;
+    [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseIn animations:^{
+        self.transform = CGAffineTransformMakeScale(scale, scale);
+        self.alpha = 0;
     } completion:^(BOOL finished) {
-        [self alertViewDidAppear];
-    }];
-}
-
-// 执行飞入动画（使用 transform 避免 Auto Layout 冲突）
-- (void)performFlyInAnimationWithDirection:(ZHHAlertViewDirection)direction view:(UIView *)view duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    // 计算初始偏移量
-    CGFloat offsetX = 0;
-    CGFloat offsetY = 0;
-
-    switch (direction) {
-        case ZHHAlertViewDirectionTop:
-            offsetY = -CGRectGetMaxY(self.frame) - 10;
-            break;
-        case ZHHAlertViewDirectionBottom:
-            offsetY = view.bounds.size.height - CGRectGetMinY(self.frame) + 10;
-            break;
-        case ZHHAlertViewDirectionLeft:
-            offsetX = -CGRectGetMaxX(self.frame) - 10;
-            break;
-        case ZHHAlertViewDirectionRight:
-            offsetX = view.bounds.size.width - CGRectGetMinX(self.frame) + 10;
-            break;
-        default:
-            break;
-    }
-
-    // 从初始位置偏移（相对于 Auto Layout）
-    self.transform = CGAffineTransformMakeTranslation(offsetX, offsetY);
-    self.alpha = 0.0;
-
-    // 执行动画回归原位
-    [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.transform = CGAffineTransformIdentity;
-        self.alpha = 1.0;
-    } completion:^(BOOL finished) {
-        [self alertViewDidAppear];
+        // 只有动画完成时才清理视图
+        if (finished || self.alpha <= 0.01) {
+            [self cleanupAfterDismiss];
+        }
     }];
 }
 
 // 隐藏并移除弹窗视图
 - (void)dismiss {
-    NSTimeInterval timeDisappear = (self.disappearTime > 0) ? self.disappearTime : 0.08; // 获取消失动画时间，默认0.08秒
+    if (!self.isShowing) {
+        return; // 如果未显示，直接返回
+    }
+    
+    NSTimeInterval timeDisappear = (self.disappearTime > 0) ? self.disappearTime : 0.1; // 获取消失动画时间，默认0.1秒
     NSTimeInterval timeDelay = 0.02; // 动画延迟时间，默认0.02秒
 
+    // 标记为不再显示
+    self.isShowing = NO;
+    
     // 根据不同的动画类型执行对应的消失动画
     switch (self.disappearAnimationType) {
         case ZHHAlertViewAnimationTypeDefault:
-            [self performFadeOutAnimationWithDuration:timeDisappear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeZoomOut:
-            [self performZoomOutAnimationWithDuration:timeDisappear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFadeOut:
-            [self performFadeOutAnimationWithDuration:timeDisappear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyTop:
-            [self performFlyOutAnimationWithDirection:ZHHAlertViewDirectionTop duration:timeDisappear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyBottom:
-            [self performFlyOutAnimationWithDirection:ZHHAlertViewDirectionBottom duration:timeDisappear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyLeft:
-            [self performFlyOutAnimationWithDirection:ZHHAlertViewDirectionLeft duration:timeDisappear delay:timeDelay];
-            break;
-        case ZHHAlertViewAnimationTypeFlyRight:
-            [self performFlyOutAnimationWithDirection:ZHHAlertViewDirectionRight duration:timeDisappear delay:timeDelay];
+            [self performScaleOutAnimationWithScale:1.1 duration:timeDisappear delay:timeDelay];
             break;
         case ZHHAlertViewAnimationTypeNone:
-            [self removeFromSuperview]; // 无动画，直接移除视图
+            [self cleanupAfterDismiss]; // 无动画，直接清理
             break;
         default:
             break;
@@ -495,62 +540,56 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
             self.backgroundDimView.alpha = 0;
         } completion:^(BOOL finished) {
             [self.backgroundDimView removeFromSuperview];
+            self.backgroundDimView = nil;
         }];
     }
 }
 
-#pragma mark - 动画执行
-
-// 执行渐隐动画
-- (void)performFadeOutAnimationWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    self.alpha = 1;
-    [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.alpha = 0;
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-    }];
-}
-
-// 执行缩放动画
-- (void)performZoomOutAnimationWithDuration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    self.transform = CGAffineTransformIdentity;
-    [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.transform = CGAffineTransformMakeScale(0.01, 0.01);
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-    }];
-}
-
-// 执行飞出动画
-- (void)performFlyOutAnimationWithDirection:(ZHHAlertViewDirection)direction duration:(NSTimeInterval)duration delay:(NSTimeInterval)delay {
-    // 计算偏移量
-    CGFloat offsetX = 0;
-    CGFloat offsetY = 0;
-
-    switch (direction) {
-        case ZHHAlertViewDirectionTop:
-            offsetY = -CGRectGetMaxY(self.frame) - 10;
-            break;
-        case ZHHAlertViewDirectionBottom:
-            offsetY = self.superview.bounds.size.height - CGRectGetMinY(self.frame) + 10;
-            break;
-        case ZHHAlertViewDirectionLeft:
-            offsetX = -CGRectGetMaxX(self.frame) - 10;
-            break;
-        case ZHHAlertViewDirectionRight:
-            offsetX = self.superview.bounds.size.width - CGRectGetMinX(self.frame) + 10;
-            break;
-        default:
-            break;
+// 清理资源
+- (void)cleanupAfterDismiss {
+    [self removeFromSuperview];
+    
+    // 清理约束
+    if (self.widthConstraint) {
+        [self.widthConstraint setActive:NO];
+        self.widthConstraint = nil;
     }
-
-    // 开始动画：使用 transform 避免与 Auto Layout 冲突
-    [UIView animateWithDuration:duration delay:delay options:UIViewAnimationOptionCurveEaseOut animations:^{
-        self.transform = CGAffineTransformMakeTranslation(offsetX, offsetY);
-        self.alpha = 0.0; // 同时淡出更自然
-    } completion:^(BOOL finished) {
-        [self removeFromSuperview];
-    }];
+    if (self.heightConstraint) {
+        [self.heightConstraint setActive:NO];
+        self.heightConstraint = nil;
+    }
+    if (self.centerXConstraint) {
+        [self.centerXConstraint setActive:NO];
+        self.centerXConstraint = nil;
+    }
+    if (self.centerYConstraint) {
+        [self.centerYConstraint setActive:NO];
+        self.centerYConstraint = nil;
+    }
+    if (self.scrollViewTopConstraint) {
+        [self.scrollViewTopConstraint setActive:NO];
+        self.scrollViewTopConstraint = nil;
+    }
+    if (self.scrollHeightConstraint) {
+        [self.scrollHeightConstraint setActive:NO];
+        self.scrollHeightConstraint = nil;
+    }
+    
+    // 移除阴影层
+    if (self.topShadowLayer) {
+        [self.topShadowLayer removeFromSuperlayer];
+        self.topShadowLayer = nil;
+    }
+    if (self.bottomShadowLayer) {
+        [self.bottomShadowLayer removeFromSuperlayer];
+        self.bottomShadowLayer = nil;
+    }
+    
+    // 清理按钮
+    for (UIView *subview in self.buttonStackView.arrangedSubviews) {
+        [self.buttonStackView removeArrangedSubview:subview];
+        [subview removeFromSuperview];
+    }
 }
 
 #pragma mark - 按钮点击事件处理
@@ -725,6 +764,133 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
     return _verticalSeparator;
 }
 
+#pragma mark - 滚动阴影
+
+// 设置阴影层
+- (void)setupShadowLayers {
+    // 获取当前背景色（用于阴影渐变）
+    UIColor *backgroundColor = self.backgroundColor ?: UIColor.whiteColor;
+    
+    // 顶部阴影层
+    if (!self.topShadowLayer) {
+        self.topShadowLayer = [CAGradientLayer layer];
+        self.topShadowLayer.colors = @[
+            (id)[backgroundColor colorWithAlphaComponent:1.0].CGColor,
+            (id)[backgroundColor colorWithAlphaComponent:0.0].CGColor
+        ];
+        self.topShadowLayer.startPoint = CGPointMake(0.5, 0.0);
+        self.topShadowLayer.endPoint = CGPointMake(0.5, 1.0);
+        self.topShadowLayer.opacity = 0;
+        [self.layer addSublayer:self.topShadowLayer];
+    } else {
+        // 更新已存在的阴影层颜色
+        self.topShadowLayer.colors = @[
+            (id)[backgroundColor colorWithAlphaComponent:1.0].CGColor,
+            (id)[backgroundColor colorWithAlphaComponent:0.0].CGColor
+        ];
+    }
+    
+    // 底部阴影层
+    if (!self.bottomShadowLayer) {
+        self.bottomShadowLayer = [CAGradientLayer layer];
+        self.bottomShadowLayer.colors = @[
+            (id)[backgroundColor colorWithAlphaComponent:0.0].CGColor,
+            (id)[backgroundColor colorWithAlphaComponent:1.0].CGColor
+        ];
+        self.bottomShadowLayer.startPoint = CGPointMake(0.5, 0.0);
+        self.bottomShadowLayer.endPoint = CGPointMake(0.5, 1.0);
+        self.bottomShadowLayer.opacity = 0;
+        [self.layer addSublayer:self.bottomShadowLayer];
+    } else {
+        // 更新已存在的阴影层颜色
+        self.bottomShadowLayer.colors = @[
+            (id)[backgroundColor colorWithAlphaComponent:0.0].CGColor,
+            (id)[backgroundColor colorWithAlphaComponent:1.0].CGColor
+        ];
+    }
+}
+
+// 更新阴影层的位置和显示状态
+- (void)updateShadowLayers {
+    if (!self.scrollView || !self.scrollView.superview) {
+        return;
+    }
+    
+    // 更新阴影层颜色（如果背景色发生变化）
+    UIColor *backgroundColor = self.backgroundColor ?: UIColor.whiteColor;
+    if (self.topShadowLayer && self.topShadowLayer.colors.count >= 2) {
+        self.topShadowLayer.colors = @[
+            (id)[backgroundColor colorWithAlphaComponent:1.0].CGColor,
+            (id)[backgroundColor colorWithAlphaComponent:0.0].CGColor
+        ];
+    }
+    if (self.bottomShadowLayer && self.bottomShadowLayer.colors.count >= 2) {
+        self.bottomShadowLayer.colors = @[
+            (id)[backgroundColor colorWithAlphaComponent:0.0].CGColor,
+            (id)[backgroundColor colorWithAlphaComponent:1.0].CGColor
+        ];
+    }
+    
+    // 如果内容不足以滚动，隐藏所有阴影
+    if (!self.scrollView.scrollEnabled || self.scrollView.contentSize.height <= self.scrollView.bounds.size.height) {
+        self.topShadowLayer.opacity = 0;
+        self.bottomShadowLayer.opacity = 0;
+        return;
+    }
+    
+    // 更新阴影层的位置和大小
+    CGFloat shadowHeight = 15.0;
+    CGRect scrollViewFrame = [self convertRect:self.scrollView.frame fromView:self.scrollView.superview];
+    
+    // 顶部阴影层：位于 scrollView 的顶部
+    self.topShadowLayer.frame = CGRectMake(
+        scrollViewFrame.origin.x,
+        scrollViewFrame.origin.y,
+        scrollViewFrame.size.width,
+        shadowHeight
+    );
+    
+    // 底部阴影层：位于 scrollView 的底部
+    self.bottomShadowLayer.frame = CGRectMake(
+        scrollViewFrame.origin.x,
+        CGRectGetMaxY(scrollViewFrame) - shadowHeight,
+        scrollViewFrame.size.width,
+        shadowHeight
+    );
+    
+    // 根据滚动位置更新阴影透明度
+    CGFloat contentOffsetY = self.scrollView.contentOffset.y;
+    CGFloat maxContentOffsetY = self.scrollView.contentSize.height - self.scrollView.bounds.size.height;
+    
+    // 顶部阴影：滚动到顶部时隐藏，向下滚动时显示
+    if (contentOffsetY <= 0) {
+        self.topShadowLayer.opacity = 0;
+    } else if (contentOffsetY >= maxContentOffsetY) {
+        self.topShadowLayer.opacity = 1.0;
+    } else {
+        // 在中间位置时显示（根据滚动位置调整透明度）
+        CGFloat progress = contentOffsetY / maxContentOffsetY;
+        self.topShadowLayer.opacity = MIN(progress * 2.0, 1.0);
+    }
+    
+    // 底部阴影：滚动到底部时隐藏，向上滚动时显示
+    if (contentOffsetY >= maxContentOffsetY) {
+        self.bottomShadowLayer.opacity = 0;
+    } else if (contentOffsetY <= 0) {
+        self.bottomShadowLayer.opacity = 1.0;
+    } else {
+        // 在中间位置时显示（根据滚动位置调整透明度）
+        CGFloat progress = 1.0 - (contentOffsetY / maxContentOffsetY);
+        self.bottomShadowLayer.opacity = MIN(progress * 2.0, 1.0);
+    }
+}
+
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    [self updateShadowLayers];
+}
+
 #pragma mark - 私有方法
 
 - (UIColor *)colorWithLightColor:(UIColor *)lightColor darkColor:(UIColor *)darkColor {
@@ -750,9 +916,11 @@ typedef NS_ENUM(NSInteger, ZHHAlertViewDirection) {
 
 // 为按钮添加点击高亮效果
 - (void)setButtonHighlightEffect:(UIButton *)button {
-    // 添加点击高亮效果：设置背景颜色透明度为 0.1，并在 0.2 秒后还原
-    UIColor *originColor = [button.backgroundColor colorWithAlphaComponent:0];
-    button.backgroundColor = [button.backgroundColor colorWithAlphaComponent:0.1];
+    // 保存原始背景颜色
+    UIColor *originColor = button.backgroundColor ?: UIColor.clearColor;
+    
+    // 添加点击高亮效果：设置背景颜色透明度为 0.1
+    button.backgroundColor = [UIColor colorWithWhite:0 alpha:0.1];
 
     // 延时恢复原始颜色
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{

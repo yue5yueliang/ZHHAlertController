@@ -14,15 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, ZHHAlertViewAnimationType) {
     ZHHAlertViewAnimationTypeNone        = 0,  ///< 无动画
-    ZHHAlertViewAnimationTypeDefault     = 1,  ///< 默认动画（淡入淡出）
-    ZHHAlertViewAnimationTypeFadeIn      = 2,  ///< 淡入动画
-    ZHHAlertViewAnimationTypeFadeOut     = 3,  ///< 淡出动画
-    ZHHAlertViewAnimationTypeFlyTop      = 4,  ///< 从顶部飞入
-    ZHHAlertViewAnimationTypeFlyBottom   = 5,  ///< 从底部飞入
-    ZHHAlertViewAnimationTypeFlyLeft     = 6,  ///< 从左侧飞入
-    ZHHAlertViewAnimationTypeFlyRight    = 7,  ///< 从右侧飞入
-    ZHHAlertViewAnimationTypeZoomIn      = 8,  ///< 缩放进入
-    ZHHAlertViewAnimationTypeZoomOut     = 9   ///< 缩放退出
+    ZHHAlertViewAnimationTypeDefault     = 1   ///< 默认动画
 };
 
 
@@ -96,8 +88,8 @@ typedef void (^ZHHAlertViewControllerBlock)(void);
 #pragma mark - 事件处理相关
 
 @property (nonatomic, weak) id<ZHHAlertViewControllerDelegate> delegate;   ///< 代理
-@property (readwrite, copy) ZHHAlertViewControllerBlock cancelButtonAction; ///< 取消按钮回调
-@property (readwrite, copy) ZHHAlertViewControllerBlock otherButtonAction;  ///< 其他按钮回调
+@property (nonatomic, copy, nullable) ZHHAlertViewControllerBlock cancelButtonAction; ///< 取消按钮回调
+@property (nonatomic, copy, nullable) ZHHAlertViewControllerBlock otherButtonAction;  ///< 其他按钮回调
 
 #pragma mark - 展示与隐藏
 

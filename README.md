@@ -16,10 +16,10 @@
 ## 截图
 
 <div align="center">
-  <img src="screenshots/screenshot_main.png" width="20%" alt="主界面" />
-  <img src="screenshots/screenshot_basic.png" width="20%" alt="基础示例" />
-  <img src="screenshots/screenshot_custom.png" width="20%" alt="自定义样式" />
-  <img src="screenshots/screenshot_long_text.png" width="20%" alt="长文本示例" />
+  <img src="screenshots/screenshot_main.png" width="25%" alt="主界面" />
+  <img src="screenshots/screenshot_basic.png" width="25%" alt="基础示例" />
+  <img src="screenshots/screenshot_custom.png" width="25%" alt="自定义样式" />
+  <img src="screenshots/screenshot_long_text.png" width="25%" alt="长文本示例" />
 </div>
 
 ## 安装

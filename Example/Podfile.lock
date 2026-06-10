@@ -1,134 +1,16 @@
 PODS:
-  - LookinServer (1.2.8):
-    - LookinServer/Core (= 1.2.8)
   - LookinServer/Core (1.2.8)
-  - ZHHAlertViewController (0.1.5):
-    - ZHHAlertViewController/Core (= 0.1.5)
-  - ZHHAlertViewController/Core (0.1.5)
-  - ZHHAnneKit (0.2.1):
-    - ZHHAnneKit/Core (= 0.2.1)
-  - ZHHAnneKit/Core (0.2.1):
-    - ZHHAnneKit/Core/BadgeView (= 0.2.1)
-    - ZHHAnneKit/Core/CommonTools (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation (= 0.2.1)
-    - ZHHAnneKit/Core/QuartzCore (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit (= 0.2.1)
-  - ZHHAnneKit/Core/BadgeView (0.2.1)
-  - ZHHAnneKit/Core/CommonTools (0.2.1):
-    - ZHHAnneKit/Core/CommonTools/Common (= 0.2.1)
-    - ZHHAnneKit/Core/CommonTools/Countdown (= 0.2.1)
-    - ZHHAnneKit/Core/CommonTools/Hovering (= 0.2.1)
-    - ZHHAnneKit/Core/CommonTools/Keychain (= 0.2.1)
-    - ZHHAnneKit/Core/CommonTools/Permission (= 0.2.1)
-  - ZHHAnneKit/Core/CommonTools/Common (0.2.1)
-  - ZHHAnneKit/Core/CommonTools/Countdown (0.2.1)
-  - ZHHAnneKit/Core/CommonTools/Hovering (0.2.1):
-    - ZHHAnneKit/Core/UIKit/UITableView
-  - ZHHAnneKit/Core/CommonTools/Keychain (0.2.1)
-  - ZHHAnneKit/Core/CommonTools/Permission (0.2.1)
-  - ZHHAnneKit/Core/Foundation (0.2.1):
-    - ZHHAnneKit/Core/Foundation/NSArray (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSAttributedString (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSBundle (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSData (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSDate (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSDecimalNumber (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSDictionary (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSException (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSFileManager (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSIndexPath (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSNotification (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSNotificationCenter (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSNumber (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSObject (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSShadow (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSString (= 0.2.1)
-    - ZHHAnneKit/Core/Foundation/NSTimer (= 0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSArray (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSAttributedString (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSBundle (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSData (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSDate (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSDecimalNumber (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSDictionary (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSException (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSFileManager (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSIndexPath (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSNotification (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSNotificationCenter (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSNumber (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSObject (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSShadow (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSString (0.2.1)
-  - ZHHAnneKit/Core/Foundation/NSTimer (0.2.1)
-  - ZHHAnneKit/Core/QuartzCore (0.2.1):
-    - ZHHAnneKit/Core/QuartzCore/CALayer (= 0.2.1)
-    - ZHHAnneKit/Core/QuartzCore/CATransaction (= 0.2.1)
-  - ZHHAnneKit/Core/QuartzCore/CALayer (0.2.1)
-  - ZHHAnneKit/Core/QuartzCore/CATransaction (0.2.1)
-  - ZHHAnneKit/Core/UIKit (0.2.1):
-    - ZHHAnneKit/Core/UIKit/UIApplication (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIBarButtonItem (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIButton (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UICollectionView (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIColor (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIControl (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIDevice (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIImage (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIImageView (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UILabel (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UINavigationBar (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UINavigationController (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UINavigationItem (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIScrollView (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UISlider (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UISplitViewController (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UITabBarItem (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UITableView (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UITextField (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UITextView (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIView (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIViewController (= 0.2.1)
-    - ZHHAnneKit/Core/UIKit/UIWindow (= 0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIApplication (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIBarButtonItem (0.2.1):
-    - ZHHAnneKit/Core/UIKit/UIColor
-    - ZHHAnneKit/Core/UIKit/UIView
-  - ZHHAnneKit/Core/UIKit/UIButton (0.2.1):
-    - ZHHAnneKit/Core/UIKit/UIImage
-  - ZHHAnneKit/Core/UIKit/UICollectionView (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIColor (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIControl (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIDevice (0.2.1):
-    - ZHHAnneKit/Core/CommonTools
-  - ZHHAnneKit/Core/UIKit/UIImage (0.2.1):
-    - ZHHAnneKit/Core/UIKit/UIColor
-  - ZHHAnneKit/Core/UIKit/UIImageView (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UILabel (0.2.1):
-    - ZHHAnneKit/Core/UIKit/UIView
-  - ZHHAnneKit/Core/UIKit/UINavigationBar (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UINavigationController (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UINavigationItem (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIScrollView (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UISlider (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UISplitViewController (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UITabBarItem (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UITableView (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UITextField (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UITextView (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIView (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIViewController (0.2.1)
-  - ZHHAnneKit/Core/UIKit/UIWindow (0.2.1)
+  - LookinServer/Swift (1.2.8):
+    - LookinServer/Core
+  - ZHHAlertViewController (0.1.6)
 
 DEPENDENCIES:
-  - LookinServer
+  - LookinServer/Swift
   - ZHHAlertViewController (from `../`)
-  - ZHHAnneKit
 
 SPEC REPOS:
   trunk:
     - LookinServer
-    - ZHHAnneKit
 
 EXTERNAL SOURCES:
   ZHHAlertViewController:
@@ -136,9 +18,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   LookinServer: 1b2b61c6402ae29fa22182d48f5cd067b4e99e80
-  ZHHAlertViewController: c77756e493525b7258e0da6010280f12473c2362
-  ZHHAnneKit: 9f8bcb6e7e4f0646ba1ffb191f37e8980ff9e17f
+  ZHHAlertViewController: 94210c8cbdc84912e41990ea68e5d64a2800bd72
 
-PODFILE CHECKSUM: dfa1950ebfcb6c61f7f3e16fa355de4d64df9e60
+PODFILE CHECKSUM: 4fc2d380ff3825afaefd471d67a1577ac7f98d88
 
 COCOAPODS: 1.16.2

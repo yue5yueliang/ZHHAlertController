@@ -6,13 +6,13 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZHHAlertViewController'
-  s.version          = '0.1.6'
+  s.version          = '1.0.0'
   s.summary          = 'ZHHAlertViewController 是 UIKit 的 UIAlertView 的最佳替代方案'
 
   # 项目的详细描述信息，注意这里的文字长度要比 s.summary 长，否则会被认为格式不合格
   s.description      = <<-DESC
   ZHHAlertViewController 是 UIKit 的 UIAlertView 的最佳替代方案。使用 ZHHAlertViewController，您可以用几行代码轻松创建所需的 AlertView 视图。
-  
+
   主要特性：
   - 高度可定制：支持自定义样式、布局、动画等
   - 灵活布局：支持自定义间距、尺寸、圆角等
@@ -25,35 +25,25 @@ Pod::Spec.new do |s|
 
   # 项目的主页地址
   s.homepage         = 'https://github.com/yue5yueliang/ZHHAlertViewController'
-  
+
   # 开源协议
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
-  
+
   # 作者信息
   s.author           = { '桃色三岁' => '136769890@qq.com' }
-  
+
   # Git 仓库地址及版本号
   s.source           = { :git => 'https://github.com/yue5yueliang/ZHHAlertViewController.git', :tag => s.version.to_s }
-  
+
   # 支持的平台及版本
-  s.ios.deployment_target = '13.0'
-  
-  # 需要的 Swift 版本（如果使用 Swift）
-  # s.swift_version = '5.0'
-  
-  # 默认子规格
-  s.default_subspec  = 'Core'
-  
-  # Core 子规格
-  s.subspec 'Core' do |core|
-    core.source_files = 'ZHHAlertViewController/Classes/**/*'
-    core.public_header_files = 'ZHHAlertViewController/Classes/**/*.h'
-    core.resource = 'ZHHAlertViewController/Assets/*.*'
-  end
-  
+  s.ios.deployment_target = '15.0'
+
+  # 需要的 Swift 版本
+  s.swift_version = '5.0'
+
+  # Swift 源码文件（纯 Swift 版，无需 subspec 和 public_header_files）
+  s.source_files = 'ZHHAlertViewController/Classes/**/*'
+
   # 所需的框架
   s.frameworks = 'UIKit'
-  
-  # 依赖关系（目前无外部依赖）
-  # s.dependency 'SomeOtherPod', '~> 1.0'
 end

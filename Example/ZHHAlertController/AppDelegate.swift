@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  ZHHAlertViewController
+//  ZHHAlertController
 //
 //  Created by 桃色三岁 on 06/09/2026.
 //  Copyright © 2026 桃色三岁. All rights reserved.

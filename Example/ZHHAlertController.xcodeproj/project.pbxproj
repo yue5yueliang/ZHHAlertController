@@ -7,16 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		448279309704CCF9C937F5A8 /* Pods_ZHHAlertViewController_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 796DEC0B2095EF9D95DB43C3 /* Pods_ZHHAlertViewController_Example.framework */; };
+		448279309704CCF9C937F5A8 /* Pods_ZHHAlertController_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 796DEC0B2095EF9D95DB43C3 /* Pods_ZHHAlertController_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
-		B1C2D3E51AFB9204008FA782 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		A1B2C3D41AFB9204008FA782 /* ZHHViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D31AFB9204008FA782 /* ZHHViewController.swift */; };
-		A1B2C3D61AFB9204008FA782 /* ZHHViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D51AFB9204008FA782 /* ZHHViewModel.swift */; };
-		AC803D27F6EB0FD0B5EE53DD /* Pods_ZHHAlertViewController_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertViewController_Tests.framework */; };
+		A1B2C3D41AFB9204008FA782 /* ZHHExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D31AFB9204008FA782 /* ZHHExampleViewController.swift */; };
+		A1B2C3D61AFB9204008FA782 /* ZHHExampleViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D51AFB9204008FA782 /* ZHHExampleViewModel.swift */; };
+		A1B2C3D81AFB9204008FA782 /* ZHHExampleAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */; };
+		A1B2C3DA1AFB9204008FA782 /* ZHHHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */; };
+		A1B2C3DC1AFB9204008FA782 /* ZHHStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */; };
+		A1B2C3DE1AFB9204008FA782 /* ZHHStyleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3DD1AFB9204008FA782 /* ZHHStyleExamples.swift */; };
+		AC803D27F6EB0FD0B5EE53DD /* Pods_ZHHAlertController_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertController_Tests.framework */; };
+		B1C2D3E51AFB9204008FA782 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */; };
+		C1D2E3F41AFB9204008FA782 /* ZHHExampleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */; };
+		C1D2E3F61AFB9204008FA782 /* ZHHExampleStepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F51AFB9204008FA782 /* ZHHExampleStepperCell.swift */; };
+		C1D2E3F81AFB9204008FA782 /* ZHHExampleSegmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F71AFB9204008FA782 /* ZHHExampleSegmentCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,32 +32,39 @@
 			containerPortal = 607FACC81AFB9204008FA782 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 607FACCF1AFB9204008FA782;
-			remoteInfo = ZHHAlertViewController;
+			remoteInfo = ZHHAlertController;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0473EAC26B8B4EAA548BD653 /* Pods-ZHHAlertViewController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Tests.debug.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Tests/Pods-ZHHAlertViewController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		2732990969B71E7A5755DC65 /* Pods-ZHHAlertViewController_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Tests.release.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Tests/Pods-ZHHAlertViewController_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		36262162A496B0C9C49874E0 /* Pods-ZHHAlertViewController_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Example.release.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Example/Pods-ZHHAlertViewController_Example.release.xcconfig"; sourceTree = "<group>"; };
+		0473EAC26B8B4EAA548BD653 /* Pods-ZHHAlertController_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertController_Tests.debug.xcconfig"; path = "Target Support Files/Pods-ZHHAlertController_Tests/Pods-ZHHAlertController_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		2732990969B71E7A5755DC65 /* Pods-ZHHAlertController_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertController_Tests.release.xcconfig"; path = "Target Support Files/Pods-ZHHAlertController_Tests/Pods-ZHHAlertController_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		36262162A496B0C9C49874E0 /* Pods-ZHHAlertController_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertController_Example.release.xcconfig"; path = "Target Support Files/Pods-ZHHAlertController_Example/Pods-ZHHAlertController_Example.release.xcconfig"; sourceTree = "<group>"; };
 		4BCE20414551B670A9613ADE /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		53BD7A339F33A9804714F0F3 /* Pods-ZHHAlertViewController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertViewController_Example.debug.xcconfig"; path = "Target Support Files/Pods-ZHHAlertViewController_Example/Pods-ZHHAlertViewController_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		607FACD01AFB9204008FA782 /* ZHHAlertViewController_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZHHAlertViewController_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		53BD7A339F33A9804714F0F3 /* Pods-ZHHAlertController_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ZHHAlertController_Example.debug.xcconfig"; path = "Target Support Files/Pods-ZHHAlertController_Example/Pods-ZHHAlertController_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		607FACD01AFB9204008FA782 /* ZHHAlertController_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZHHAlertController_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		607FACDA1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		607FACDC1AFB9204008FA782 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		607FACDF1AFB9204008FA782 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
-		607FACE51AFB9204008FA782 /* ZHHAlertViewController_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZHHAlertViewController_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		607FACE51AFB9204008FA782 /* ZHHAlertController_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ZHHAlertController_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		796DEC0B2095EF9D95DB43C3 /* Pods_ZHHAlertViewController_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZHHAlertViewController_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1B2C3D31AFB9204008FA782 /* ZHHViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHViewController.swift; sourceTree = "<group>"; };
-		A1B2C3D51AFB9204008FA782 /* ZHHViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHViewModel.swift; sourceTree = "<group>"; };
+		796DEC0B2095EF9D95DB43C3 /* Pods_ZHHAlertController_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZHHAlertController_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1B2C3D31AFB9204008FA782 /* ZHHExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleViewController.swift; sourceTree = "<group>"; };
+		A1B2C3D51AFB9204008FA782 /* ZHHExampleViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleViewModel.swift; sourceTree = "<group>"; };
+		A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleAppearance.swift; sourceTree = "<group>"; };
+		A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHHomeViewController.swift; sourceTree = "<group>"; };
+		A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHStylesViewController.swift; sourceTree = "<group>"; };
+		A1B2C3DD1AFB9204008FA782 /* ZHHStyleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHStyleExamples.swift; sourceTree = "<group>"; };
+		B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleTextCell.swift; sourceTree = "<group>"; };
+		C1D2E3F51AFB9204008FA782 /* ZHHExampleStepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleStepperCell.swift; sourceTree = "<group>"; };
+		C1D2E3F71AFB9204008FA782 /* ZHHExampleSegmentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleSegmentCell.swift; sourceTree = "<group>"; };
 		C4D3D9BE5EBAE06082A26847 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		D8D60D751E7B06A8D2980C89 /* ZHHAlertViewController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ZHHAlertViewController.podspec; path = ../ZHHAlertViewController.podspec; sourceTree = "<group>"; };
-		EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertViewController_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZHHAlertViewController_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D8D60D751E7B06A8D2980C89 /* ZHHAlertController.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = ZHHAlertController.podspec; path = ../ZHHAlertController.podspec; sourceTree = "<group>"; };
+		EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertController_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ZHHAlertController_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +72,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				448279309704CCF9C937F5A8 /* Pods_ZHHAlertViewController_Example.framework in Frameworks */,
+				448279309704CCF9C937F5A8 /* Pods_ZHHAlertController_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AC803D27F6EB0FD0B5EE53DD /* Pods_ZHHAlertViewController_Tests.framework in Frameworks */,
+				AC803D27F6EB0FD0B5EE53DD /* Pods_ZHHAlertController_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,8 +90,8 @@
 		44434F64C48F1A2A270C2728 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				796DEC0B2095EF9D95DB43C3 /* Pods_ZHHAlertViewController_Example.framework */,
-				EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertViewController_Tests.framework */,
+				796DEC0B2095EF9D95DB43C3 /* Pods_ZHHAlertController_Example.framework */,
+				EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertController_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -86,7 +100,7 @@
 			isa = PBXGroup;
 			children = (
 				607FACF51AFB993E008FA782 /* Podspec Metadata */,
-				607FACD21AFB9204008FA782 /* Example for ZHHAlertViewController */,
+				607FACD21AFB9204008FA782 /* Example for ZHHAlertController */,
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				7951C25868F40AB6655AA073 /* Pods */,
@@ -97,26 +111,57 @@
 		607FACD11AFB9204008FA782 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				607FACD01AFB9204008FA782 /* ZHHAlertViewController_Example.app */,
-				607FACE51AFB9204008FA782 /* ZHHAlertViewController_Tests.xctest */,
+				607FACD01AFB9204008FA782 /* ZHHAlertController_Example.app */,
+				607FACE51AFB9204008FA782 /* ZHHAlertController_Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		607FACD21AFB9204008FA782 /* Example for ZHHAlertViewController */ = {
+		607FACD21AFB9204008FA782 /* Example for ZHHAlertController */ = {
 			isa = PBXGroup;
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */,
-				A1B2C3D31AFB9204008FA782 /* ZHHViewController.swift */,
-				A1B2C3D51AFB9204008FA782 /* ZHHViewModel.swift */,
+				D1E2F3061AFB9204008FA782 /* ViewControllers */,
+				D1E2F3071AFB9204008FA782 /* View */,
+				D1E2F3081AFB9204008FA782 /* ViewModel */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
 			);
-			name = "Example for ZHHAlertViewController";
-			path = ZHHAlertViewController;
+			name = "Example for ZHHAlertController";
+			path = ZHHAlertController;
+			sourceTree = "<group>";
+		};
+		D1E2F3061AFB9204008FA782 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */,
+				A1B2C3D31AFB9204008FA782 /* ZHHExampleViewController.swift */,
+				A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		D1E2F3071AFB9204008FA782 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */,
+				C1D2E3F51AFB9204008FA782 /* ZHHExampleStepperCell.swift */,
+				C1D2E3F71AFB9204008FA782 /* ZHHExampleSegmentCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D1E2F3081AFB9204008FA782 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D51AFB9204008FA782 /* ZHHExampleViewModel.swift */,
+				A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */,
+				A1B2C3DD1AFB9204008FA782 /* ZHHStyleExamples.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
@@ -147,7 +192,7 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				D8D60D751E7B06A8D2980C89 /* ZHHAlertViewController.podspec */,
+				D8D60D751E7B06A8D2980C89 /* ZHHAlertController.podspec */,
 				4BCE20414551B670A9613ADE /* README.md */,
 				C4D3D9BE5EBAE06082A26847 /* LICENSE */,
 			);
@@ -157,10 +202,10 @@
 		7951C25868F40AB6655AA073 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				53BD7A339F33A9804714F0F3 /* Pods-ZHHAlertViewController_Example.debug.xcconfig */,
-				36262162A496B0C9C49874E0 /* Pods-ZHHAlertViewController_Example.release.xcconfig */,
-				0473EAC26B8B4EAA548BD653 /* Pods-ZHHAlertViewController_Tests.debug.xcconfig */,
-				2732990969B71E7A5755DC65 /* Pods-ZHHAlertViewController_Tests.release.xcconfig */,
+				53BD7A339F33A9804714F0F3 /* Pods-ZHHAlertController_Example.debug.xcconfig */,
+				36262162A496B0C9C49874E0 /* Pods-ZHHAlertController_Example.release.xcconfig */,
+				0473EAC26B8B4EAA548BD653 /* Pods-ZHHAlertController_Tests.debug.xcconfig */,
+				2732990969B71E7A5755DC65 /* Pods-ZHHAlertController_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -168,9 +213,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		607FACCF1AFB9204008FA782 /* ZHHAlertViewController_Example */ = {
+		607FACCF1AFB9204008FA782 /* ZHHAlertController_Example */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertViewController_Example" */;
+			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertController_Example" */;
 			buildPhases = (
 				AA7E51DE233EA7B7EB710FD2 /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
@@ -182,14 +227,14 @@
 			);
 			dependencies = (
 			);
-			name = ZHHAlertViewController_Example;
-			productName = ZHHAlertViewController;
-			productReference = 607FACD01AFB9204008FA782 /* ZHHAlertViewController_Example.app */;
+			name = ZHHAlertController_Example;
+			productName = ZHHAlertController;
+			productReference = 607FACD01AFB9204008FA782 /* ZHHAlertController_Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		607FACE41AFB9204008FA782 /* ZHHAlertViewController_Tests */ = {
+		607FACE41AFB9204008FA782 /* ZHHAlertController_Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertViewController_Tests" */;
+			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertController_Tests" */;
 			buildPhases = (
 				8CA1824D6DCE88EA3B2EE392 /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
@@ -201,9 +246,9 @@
 			dependencies = (
 				607FACE71AFB9204008FA782 /* PBXTargetDependency */,
 			);
-			name = ZHHAlertViewController_Tests;
+			name = ZHHAlertController_Tests;
 			productName = Tests;
-			productReference = 607FACE51AFB9204008FA782 /* ZHHAlertViewController_Tests.xctest */;
+			productReference = 607FACE51AFB9204008FA782 /* ZHHAlertController_Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -229,7 +274,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "ZHHAlertViewController" */;
+			buildConfigurationList = 607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "ZHHAlertController" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -243,8 +288,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				607FACCF1AFB9204008FA782 /* ZHHAlertViewController_Example */,
-				607FACE41AFB9204008FA782 /* ZHHAlertViewController_Tests */,
+				607FACCF1AFB9204008FA782 /* ZHHAlertController_Example */,
+				607FACE41AFB9204008FA782 /* ZHHAlertController_Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -276,18 +321,18 @@
 			files = (
 			);
 			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ZHHAlertViewController_Example/Pods-ZHHAlertViewController_Example-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-ZHHAlertController_Example/Pods-ZHHAlertController_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/LookinServer/LookinServer.framework",
-				"${BUILT_PRODUCTS_DIR}/ZHHAlertViewController/ZHHAlertViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/ZHHAlertController/ZHHAlertController.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LookinServer.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZHHAlertViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZHHAlertController.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ZHHAlertViewController_Example/Pods-ZHHAlertViewController_Example-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ZHHAlertController_Example/Pods-ZHHAlertController_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		8CA1824D6DCE88EA3B2EE392 /* [CP] Check Pods Manifest.lock */ = {
@@ -305,7 +350,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ZHHAlertViewController_Tests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ZHHAlertController_Tests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -327,7 +372,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-ZHHAlertViewController_Example-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-ZHHAlertController_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -343,8 +388,15 @@
 			files = (
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 				B1C2D3E51AFB9204008FA782 /* SceneDelegate.swift in Sources */,
-				A1B2C3D41AFB9204008FA782 /* ZHHViewController.swift in Sources */,
-				A1B2C3D61AFB9204008FA782 /* ZHHViewModel.swift in Sources */,
+				A1B2C3DA1AFB9204008FA782 /* ZHHHomeViewController.swift in Sources */,
+				A1B2C3D41AFB9204008FA782 /* ZHHExampleViewController.swift in Sources */,
+				C1D2E3F41AFB9204008FA782 /* ZHHExampleTextCell.swift in Sources */,
+				C1D2E3F61AFB9204008FA782 /* ZHHExampleStepperCell.swift in Sources */,
+				C1D2E3F81AFB9204008FA782 /* ZHHExampleSegmentCell.swift in Sources */,
+				A1B2C3DC1AFB9204008FA782 /* ZHHStylesViewController.swift in Sources */,
+				A1B2C3DE1AFB9204008FA782 /* ZHHStyleExamples.swift in Sources */,
+				A1B2C3D61AFB9204008FA782 /* ZHHExampleViewModel.swift in Sources */,
+				A1B2C3D81AFB9204008FA782 /* ZHHExampleAppearance.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,7 +413,7 @@
 /* Begin PBXTargetDependency section */
 		607FACE71AFB9204008FA782 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 607FACCF1AFB9204008FA782 /* ZHHAlertViewController_Example */;
+			target = 607FACCF1AFB9204008FA782 /* ZHHAlertController_Example */;
 			targetProxy = 607FACE61AFB9204008FA782 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -487,11 +539,11 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 53BD7A339F33A9804714F0F3 /* Pods-ZHHAlertViewController_Example.debug.xcconfig */;
+			baseConfigurationReference = 53BD7A339F33A9804714F0F3 /* Pods-ZHHAlertController_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 7GP7QM2K7V;
-				INFOPLIST_FILE = ZHHAlertViewController/Info.plist;
+				INFOPLIST_FILE = ZHHAlertController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -504,11 +556,11 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 36262162A496B0C9C49874E0 /* Pods-ZHHAlertViewController_Example.release.xcconfig */;
+			baseConfigurationReference = 36262162A496B0C9C49874E0 /* Pods-ZHHAlertController_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 7GP7QM2K7V;
-				INFOPLIST_FILE = ZHHAlertViewController/Info.plist;
+				INFOPLIST_FILE = ZHHAlertController/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
@@ -521,7 +573,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0473EAC26B8B4EAA548BD653 /* Pods-ZHHAlertViewController_Tests.debug.xcconfig */;
+			baseConfigurationReference = 0473EAC26B8B4EAA548BD653 /* Pods-ZHHAlertController_Tests.debug.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 7GP7QM2K7V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -538,13 +590,13 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZHHAlertViewController_Example.app/ZHHAlertViewController_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZHHAlertController_Example.app/ZHHAlertController_Example";
 			};
 			name = Debug;
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2732990969B71E7A5755DC65 /* Pods-ZHHAlertViewController_Tests.release.xcconfig */;
+			baseConfigurationReference = 2732990969B71E7A5755DC65 /* Pods-ZHHAlertController_Tests.release.xcconfig */;
 			buildSettings = {
 				DEVELOPMENT_TEAM = 7GP7QM2K7V;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -557,14 +609,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZHHAlertViewController_Example.app/ZHHAlertViewController_Example";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ZHHAlertController_Example.app/ZHHAlertController_Example";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "ZHHAlertViewController" */ = {
+		607FACCB1AFB9204008FA782 /* Build configuration list for PBXProject "ZHHAlertController" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACED1AFB9204008FA782 /* Debug */,
@@ -573,7 +625,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertViewController_Example" */ = {
+		607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertController_Example" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF01AFB9204008FA782 /* Debug */,
@@ -582,7 +634,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertViewController_Tests" */ = {
+		607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "ZHHAlertController_Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				607FACF31AFB9204008FA782 /* Debug */,

@@ -1,6 +1,6 @@
 //
-//  ZHHAlertViewController.swift
-//  ZHHAlertViewController
+//  ZHHAlertController.swift
+//  ZHHAlertController
 //
 //  Created by 桃色三岁 on 2022/4/8.
 //  Copyright © 2022 桃色三岁. All rights reserved.
@@ -11,7 +11,7 @@ import UIKit
 // MARK: - 动画类型
 
 /// 弹窗出现/消失动画类型
-public enum ZHHAlertViewAnimationType: Int {
+public enum ZHHAlertAnimationType: Int {
     /// 无动画
     case none = 0
     /// 缩放 + 渐显/渐隐
@@ -19,38 +19,38 @@ public enum ZHHAlertViewAnimationType: Int {
 }
 
 /// 按钮点击回调
-public typealias ZHHAlertViewControllerBlock = () -> Void
+public typealias ZHHAlertControllerBlock = () -> Void
 
 // MARK: - 代理协议
 
 /// 弹窗生命周期与按钮点击代理
-public protocol ZHHAlertViewControllerDelegate: AnyObject {
+public protocol ZHHAlertControllerDelegate: AnyObject {
     /// 弹窗即将显示
-    func alertViewWillAppear(_ alertView: ZHHAlertViewController)
+    func alertViewWillAppear(_ alertView: ZHHAlertController)
     /// 弹窗已经显示
-    func alertViewDidAppear(_ alertView: ZHHAlertViewController)
+    func alertViewDidAppear(_ alertView: ZHHAlertController)
     /// 用户点击了取消按钮
-    func alertViewDidClickCancelButton(_ alertView: ZHHAlertViewController)
+    func alertViewDidClickCancelButton(_ alertView: ZHHAlertController)
     /// 用户点击了其他按钮
-    func alertViewDidClickOtherButton(_ alertView: ZHHAlertViewController)
+    func alertViewDidClickOtherButton(_ alertView: ZHHAlertController)
 }
 
 /// 代理方法默认空实现，调用方可按需实现
-public extension ZHHAlertViewControllerDelegate {
+public extension ZHHAlertControllerDelegate {
     /// 弹窗即将显示
-    func alertViewWillAppear(_ alertView: ZHHAlertViewController) {}
+    func alertViewWillAppear(_ alertView: ZHHAlertController) {}
     /// 弹窗已经显示
-    func alertViewDidAppear(_ alertView: ZHHAlertViewController) {}
+    func alertViewDidAppear(_ alertView: ZHHAlertController) {}
     /// 用户点击了取消按钮
-    func alertViewDidClickCancelButton(_ alertView: ZHHAlertViewController) {}
+    func alertViewDidClickCancelButton(_ alertView: ZHHAlertController) {}
     /// 用户点击了其他按钮
-    func alertViewDidClickOtherButton(_ alertView: ZHHAlertViewController) {}
+    func alertViewDidClickOtherButton(_ alertView: ZHHAlertController) {}
 }
 
 // MARK: - 主类
 
 /// 自定义 Alert 弹窗视图（继承 UIView，非 UIViewController）
-public class ZHHAlertViewController: UIView {
+public class ZHHAlertController: UIView {
 
     // MARK: 视图相关属性
 
@@ -60,11 +60,10 @@ public class ZHHAlertViewController: UIView {
             guard let contentView = customContentView else { return }
             hasCustomContentView = true
             // 弹窗尺寸 = 内容高度 + 按钮区域高度
-            width = contentView.frame.size.width
-            height = contentView.frame.size.height + buttonHeight + buttonTopPadding + buttonBottomPadding
-            contentView.frame = contentView.bounds
-            frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: width, height: height)
-            addSubview(contentView)
+            popupWidth = contentView.frame.size.width
+            popupHeight = contentView.frame.size.height + buttonHeight + contentButtonSpacing + buttonBottomPadding
+            contentView.translatesAutoresizingMaskIntoConstraints = false
+            frame = CGRect(x: frame.origin.x, y: frame.origin.y, width: popupWidth, height: popupHeight)
         }
     }
 
@@ -120,22 +119,22 @@ public class ZHHAlertViewController: UIView {
     public var titleTopPadding: CGFloat = 15.0
     /// 标题与正文间距
     public var titleBottomPadding: CGFloat = 10.0
-    /// 标题和正文左右内边距
-    public var contentLeftRightPadding: CGFloat = 20.0
-    /// 按钮区域距正文底部间距
-    public var buttonTopPadding: CGFloat = 0.0
+    /// 标题和正文水平内边距
+    public var contentHorizontalPadding: CGFloat = 20.0
+    /// 正文与按钮区间距
+    public var contentButtonSpacing: CGFloat = 15.0
     /// 按钮距底部间距
     public var buttonBottomPadding: CGFloat = 0.0
-    /// 按钮区域左右内边距
-    public var buttonLeftRightPadding: CGFloat = 0.0
+    /// 按钮区域水平内边距
+    public var buttonHorizontalPadding: CGFloat = 0.0
     /// 多按钮水平间距（为 0 时显示分隔线）
     public var buttonSpacing: CGFloat = 0.0
     /// 按钮高度
     public var buttonHeight: CGFloat = 44.0
     /// 弹窗宽度
-    public var width: CGFloat = 284.0
-    /// 弹窗默认高度
-    public var height: CGFloat = 135.0
+    public var popupWidth: CGFloat = 284.0
+    /// 弹窗最小高度
+    public var popupHeight: CGFloat = 135.0
     /// 弹窗圆角
     public var cornerRadius: CGFloat = 8.0
 
@@ -161,9 +160,9 @@ public class ZHHAlertViewController: UIView {
     // MARK: 动画配置
 
     /// 出现动画类型
-    public var appearAnimationType: ZHHAlertViewAnimationType = .default
+    public var appearAnimationType: ZHHAlertAnimationType = .default
     /// 消失动画类型
-    public var disappearAnimationType: ZHHAlertViewAnimationType = .default
+    public var disappearAnimationType: ZHHAlertAnimationType = .default
     public var fadeInDuration: TimeInterval = 0.2  /// 淡入时长
     public var fadeOutDuration: TimeInterval = 0.1 /// 淡出时长
 
@@ -189,9 +188,9 @@ public class ZHHAlertViewController: UIView {
 
     // MARK: 事件处理相关
 
-    public weak var delegate: ZHHAlertViewControllerDelegate?
-    public var cancelButtonAction: ZHHAlertViewControllerBlock?
-    public var otherButtonAction: ZHHAlertViewControllerBlock?
+    public weak var delegate: ZHHAlertControllerDelegate?
+    public var cancelButtonAction: ZHHAlertControllerBlock?
+    public var otherButtonAction: ZHHAlertControllerBlock?
 
     // MARK: 内部状态（供 extension 文件访问）
 
@@ -199,9 +198,34 @@ public class ZHHAlertViewController: UIView {
     var hasCustomContentView = false
     /// 弹窗是否正在显示
     var isShowing = false
+    /// 内部 StackView 布局是否已构建
+    var isLayoutSetup = false
 
-    /// 内容容器，包裹标题和 scrollView
-    lazy var containerView: UIView = {
+    /// 内容区容器（标题 + 正文，不含按钮）
+    lazy var contentContainerView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    /// 内容区顶部弹性间距
+    lazy var topSpacerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    /// 内容区底部弹性间距
+    lazy var bottomSpacerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
+    /// 按钮区外层容器，用于左右内边距
+    lazy var buttonContainerView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -257,10 +281,26 @@ public class ZHHAlertViewController: UIView {
     var widthConstraint: NSLayoutConstraint?
     /// 弹窗自身高度约束
     var heightConstraint: NSLayoutConstraint?
+    /// 标题高度约束（动态更新）
+    var titleHeightConstraint: NSLayoutConstraint?
+    /// 正文顶部约束（有标题 / 无标题二选一）
+    var scrollTopToTitleConstraint: NSLayoutConstraint?
+    var scrollTopToSpacerConstraint: NSLayoutConstraint?
     /// scrollView 高度约束（动态更新）
     var scrollHeightConstraint: NSLayoutConstraint?
-    /// scrollView 顶部约束（有/无标题时切换）
-    var scrollViewTopConstraint: NSLayoutConstraint?
+    /// 内容区顶部/底部间距约束
+    var topSpacerHeightConstraint: NSLayoutConstraint?
+    /// 自定义内容区高度约束
+    var customContentHeightConstraint: NSLayoutConstraint?
+    /// bottomSpacer 顶部锚点（正文滚动区 / 自定义内容区二选一）
+    var bottomSpacerTopToScrollConstraint: NSLayoutConstraint?
+    var bottomSpacerTopToCustomConstraint: NSLayoutConstraint?
+    /// 按钮区高度约束
+    var buttonAreaHeightConstraint: NSLayoutConstraint?
+    /// 按钮栈高度约束
+    var buttonStackHeightConstraint: NSLayoutConstraint?
+    /// 分隔线高度约束
+    var separatorHeightConstraint: NSLayoutConstraint?
     /// 弹窗水平居中约束
     var centerXConstraint: NSLayoutConstraint?
     /// 弹窗垂直居中约束
@@ -274,8 +314,8 @@ public class ZHHAlertViewController: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         if frame != .zero {
-            width = frame.size.width
-            height = frame.size.height
+            popupWidth = frame.size.width
+            popupHeight = frame.size.height
         }
         configureDefaultAppearance()
     }
@@ -293,6 +333,7 @@ public class ZHHAlertViewController: UIView {
     private func configureDefaultAppearance() {
         backgroundColor = .white
         clipsToBounds = true
+        insetsLayoutMarginsFromSafeArea = false
     }
 
     /// 供 #selector 引用，实际逻辑在 +Show extension

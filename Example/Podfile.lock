@@ -2,24 +2,24 @@ PODS:
   - LookinServer/Core (1.2.8)
   - LookinServer/Swift (1.2.8):
     - LookinServer/Core
-  - ZHHAlertViewController (0.1.6)
+  - ZHHAlertController (1.0.0)
 
 DEPENDENCIES:
   - LookinServer/Swift
-  - ZHHAlertViewController (from `../`)
+  - ZHHAlertController (from `../`)
 
 SPEC REPOS:
   trunk:
     - LookinServer
 
 EXTERNAL SOURCES:
-  ZHHAlertViewController:
+  ZHHAlertController:
     :path: "../"
 
 SPEC CHECKSUMS:
   LookinServer: 1b2b61c6402ae29fa22182d48f5cd067b4e99e80
-  ZHHAlertViewController: 94210c8cbdc84912e41990ea68e5d64a2800bd72
+  ZHHAlertController: e12d5acbcf1a282d02e76c167f49f3ac02295038
 
-PODFILE CHECKSUM: 4fc2d380ff3825afaefd471d67a1577ac7f98d88
+PODFILE CHECKSUM: e9add0fc1faf9a9c0afcdd9ef90cf52908a3e077
 
 COCOAPODS: 1.16.2

@@ -1,6 +1,6 @@
 //
 //  SceneDelegate.swift
-//  ZHHAlertViewController
+//  ZHHAlertController
 //
 //  Created by 桃色三岁 on 06/09/2026.
 //  Copyright © 2026 桃色三岁. All rights reserved.
@@ -16,7 +16,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         let window = UIWindow(windowScene: windowScene)
-        let rootVC = ZHHViewController()
+        let rootVC = ZHHHomeViewController()
         let navigation = UINavigationController(rootViewController: rootVC)
         UINavigationBar.appearance().tintColor = .white
         window.rootViewController = navigation

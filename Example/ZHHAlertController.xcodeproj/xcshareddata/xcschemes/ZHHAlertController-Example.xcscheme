@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-               BuildableName = "ZHHAlertViewController_Example.app"
-               BlueprintName = "ZHHAlertViewController_Example"
-               ReferencedContainer = "container:ZHHAlertViewController.xcodeproj">
+               BuildableName = "ZHHAlertController_Example.app"
+               BlueprintName = "ZHHAlertController_Example"
+               ReferencedContainer = "container:ZHHAlertController.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -29,9 +29,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "ZHHAlertViewController_Tests.xctest"
-               BlueprintName = "ZHHAlertViewController_Tests"
-               ReferencedContainer = "container:ZHHAlertViewController.xcodeproj">
+               BuildableName = "ZHHAlertController_Tests.xctest"
+               BlueprintName = "ZHHAlertController_Tests"
+               ReferencedContainer = "container:ZHHAlertController.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -48,9 +48,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "607FACE41AFB9204008FA782"
-               BuildableName = "ZHHAlertViewController_Tests.xctest"
-               BlueprintName = "ZHHAlertViewController_Tests"
-               ReferencedContainer = "container:ZHHAlertViewController.xcodeproj">
+               BuildableName = "ZHHAlertController_Tests.xctest"
+               BlueprintName = "ZHHAlertController_Tests"
+               ReferencedContainer = "container:ZHHAlertController.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -58,9 +58,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "ZHHAlertViewController_Example.app"
-            BlueprintName = "ZHHAlertViewController_Example"
-            ReferencedContainer = "container:ZHHAlertViewController.xcodeproj">
+            BuildableName = "ZHHAlertController_Example.app"
+            BlueprintName = "ZHHAlertController_Example"
+            ReferencedContainer = "container:ZHHAlertController.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -82,9 +82,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "ZHHAlertViewController_Example.app"
-            BlueprintName = "ZHHAlertViewController_Example"
-            ReferencedContainer = "container:ZHHAlertViewController.xcodeproj">
+            BuildableName = "ZHHAlertController_Example.app"
+            BlueprintName = "ZHHAlertController_Example"
+            ReferencedContainer = "container:ZHHAlertController.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -101,9 +101,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "607FACCF1AFB9204008FA782"
-            BuildableName = "ZHHAlertViewController_Example.app"
-            BlueprintName = "ZHHAlertViewController_Example"
-            ReferencedContainer = "container:ZHHAlertViewController.xcodeproj">
+            BuildableName = "ZHHAlertController_Example.app"
+            BlueprintName = "ZHHAlertController_Example"
+            ReferencedContainer = "container:ZHHAlertController.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

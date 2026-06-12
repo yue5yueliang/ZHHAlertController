@@ -1,13 +1,14 @@
 //
-//  ZHHAlertViewController+Show.swift
-//  ZHHAlertViewController
+//  ZHHAlertController+Show.swift
+//  ZHHAlertController
 //
-//  显示与关闭：show / dismiss、动画、按钮交互、背景遮罩
+//  Created by 桃色三岁 on 2022/4/8.
+//  Copyright © 2022 桃色三岁. All rights reserved.
 //
 
 import UIKit
 
-extension ZHHAlertViewController {
+extension ZHHAlertController {
 
     // MARK: - 显示与关闭
 
@@ -45,27 +46,21 @@ extension ZHHAlertViewController {
             self?.updateShadowLayers()
         }
 
-        buttonStackView.spacing = buttonSpacing
         configureButtons()
 
         view.addSubview(self)
 
-        // 居中约束，宽高由属性 width / height 决定
-        widthConstraint = widthAnchor.constraint(equalToConstant: width)
-        heightConstraint = heightAnchor.constraint(equalToConstant: height)
+        // 居中约束，宽高由 popupWidth / popupHeight 决定
+        widthConstraint = widthAnchor.constraint(equalToConstant: popupWidth)
+        heightConstraint = heightAnchor.constraint(equalToConstant: popupHeight)
         centerXConstraint = centerXAnchor.constraint(equalTo: view.centerXAnchor)
         centerYConstraint = centerYAnchor.constraint(equalTo: view.centerYAnchor)
 
         translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            centerXConstraint!,
-            centerYConstraint!,
-            widthConstraint!,
-            heightConstraint!
-        ])
+        NSLayoutConstraint.activate([centerXConstraint!, centerYConstraint!, widthConstraint!, heightConstraint!])
 
         isShowing = true
-        layoutContent()
+        updateAlertLayout()
 
         // 非 window 场景下，按需添加背景遮罩
         if shouldDimBackgroundWhenShowInView && view !== keyWindow {
@@ -261,8 +256,6 @@ extension ZHHAlertViewController {
         centerXConstraint = nil
         centerYConstraint?.isActive = false
         centerYConstraint = nil
-        scrollViewTopConstraint?.isActive = false
-        scrollViewTopConstraint = nil
         scrollHeightConstraint?.isActive = false
         scrollHeightConstraint = nil
     }

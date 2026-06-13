@@ -6,7 +6,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'ZHHAlertController'
-  s.version          = '1.0.0'
+  s.version          = '1.1.0'
   s.summary          = '基于 UIKit 的可定制 Alert 弹窗组件'
 
   # 项目的详细描述信息，注意这里的文字长度要比 s.summary 长，否则会被认为格式不合格

@@ -46,12 +46,12 @@ struct ZHHExampleAppearance {
 
     // MARK: 动画与展示
 
-    /// 0 无动画，1 默认动画
-    var appearAnimationIndex: Int = 1
+    /// 对应 ZHHAlertAnimationStyle.rawValue，默认 transform
+    var presentationStyleIndex: Int = ZHHAlertAnimationStyle.transform.rawValue
     /// 0 窗口，1 当前视图
     var showModeIndex: Int = 0
 
-    var appearAnimationType: ZHHAlertAnimationType {
-        appearAnimationIndex == 0 ? .none : .default
+    var presentationStyle: ZHHAlertAnimationStyle {
+        ZHHAlertAnimationStyle(rawValue: presentationStyleIndex) ?? .transform
     }
 }

@@ -18,7 +18,7 @@
 		A1B2C3D81AFB9204008FA782 /* ZHHExampleAppearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */; };
 		A1B2C3DA1AFB9204008FA782 /* ZHHHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */; };
 		A1B2C3DC1AFB9204008FA782 /* ZHHStylesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */; };
-		A1B2C3DE1AFB9204008FA782 /* ZHHStyleExamples.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3DD1AFB9204008FA782 /* ZHHStyleExamples.swift */; };
+		A1B2C3DE1AFB9204008FA782 /* ZHHExampleStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3DD1AFB9204008FA782 /* ZHHExampleStyle.swift */; };
 		AC803D27F6EB0FD0B5EE53DD /* Pods_ZHHAlertController_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EB9856D12A97B134D6C9F29B /* Pods_ZHHAlertController_Tests.framework */; };
 		B1C2D3E51AFB9204008FA782 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */; };
 		C1D2E3F41AFB9204008FA782 /* ZHHExampleTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */; };
@@ -57,7 +57,7 @@
 		A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleAppearance.swift; sourceTree = "<group>"; };
 		A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHHomeViewController.swift; sourceTree = "<group>"; };
 		A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHStylesViewController.swift; sourceTree = "<group>"; };
-		A1B2C3DD1AFB9204008FA782 /* ZHHStyleExamples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHStyleExamples.swift; sourceTree = "<group>"; };
+		A1B2C3DD1AFB9204008FA782 /* ZHHExampleStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleStyle.swift; sourceTree = "<group>"; };
 		B1C2D3E41AFB9204008FA782 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleTextCell.swift; sourceTree = "<group>"; };
 		C1D2E3F51AFB9204008FA782 /* ZHHExampleStepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZHHExampleStepperCell.swift; sourceTree = "<group>"; };
@@ -134,36 +134,6 @@
 			path = ZHHAlertController;
 			sourceTree = "<group>";
 		};
-		D1E2F3061AFB9204008FA782 /* ViewControllers */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */,
-				A1B2C3D31AFB9204008FA782 /* ZHHExampleViewController.swift */,
-				A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */,
-			);
-			path = ViewControllers;
-			sourceTree = "<group>";
-		};
-		D1E2F3071AFB9204008FA782 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */,
-				C1D2E3F51AFB9204008FA782 /* ZHHExampleStepperCell.swift */,
-				C1D2E3F71AFB9204008FA782 /* ZHHExampleSegmentCell.swift */,
-			);
-			path = View;
-			sourceTree = "<group>";
-		};
-		D1E2F3081AFB9204008FA782 /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3D51AFB9204008FA782 /* ZHHExampleViewModel.swift */,
-				A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */,
-				A1B2C3DD1AFB9204008FA782 /* ZHHStyleExamples.swift */,
-			);
-			path = ViewModel;
-			sourceTree = "<group>";
-		};
 		607FACD31AFB9204008FA782 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -208,6 +178,36 @@
 				2732990969B71E7A5755DC65 /* Pods-ZHHAlertController_Tests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		D1E2F3061AFB9204008FA782 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D91AFB9204008FA782 /* ZHHHomeViewController.swift */,
+				A1B2C3D31AFB9204008FA782 /* ZHHExampleViewController.swift */,
+				A1B2C3DB1AFB9204008FA782 /* ZHHStylesViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		D1E2F3071AFB9204008FA782 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C1D2E3F31AFB9204008FA782 /* ZHHExampleTextCell.swift */,
+				C1D2E3F51AFB9204008FA782 /* ZHHExampleStepperCell.swift */,
+				C1D2E3F71AFB9204008FA782 /* ZHHExampleSegmentCell.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D1E2F3081AFB9204008FA782 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D51AFB9204008FA782 /* ZHHExampleViewModel.swift */,
+				A1B2C3D71AFB9204008FA782 /* ZHHExampleAppearance.swift */,
+				A1B2C3DD1AFB9204008FA782 /* ZHHExampleStyle.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -394,7 +394,7 @@
 				C1D2E3F61AFB9204008FA782 /* ZHHExampleStepperCell.swift in Sources */,
 				C1D2E3F81AFB9204008FA782 /* ZHHExampleSegmentCell.swift in Sources */,
 				A1B2C3DC1AFB9204008FA782 /* ZHHStylesViewController.swift in Sources */,
-				A1B2C3DE1AFB9204008FA782 /* ZHHStyleExamples.swift in Sources */,
+				A1B2C3DE1AFB9204008FA782 /* ZHHExampleStyle.swift in Sources */,
 				A1B2C3D61AFB9204008FA782 /* ZHHExampleViewModel.swift in Sources */,
 				A1B2C3D81AFB9204008FA782 /* ZHHExampleAppearance.swift in Sources */,
 			);

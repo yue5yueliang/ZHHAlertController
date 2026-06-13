@@ -37,19 +37,19 @@ final class ZHHStylesViewController: UIViewController {
 extension ZHHStylesViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        ZHHStyleExample.allCases.count
+        ZHHExampleStyle.allCases.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = ZHHStyleExample.allCases[indexPath.row].title
+        cell.textLabel?.text = ZHHExampleStyle.allCases[indexPath.row].title
         cell.accessoryType = .none
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let example = ZHHStyleExample.allCases[indexPath.row]
+        let example = ZHHExampleStyle.allCases[indexPath.row]
         example.makeAlert(presentingView: view).show()
     }
 }

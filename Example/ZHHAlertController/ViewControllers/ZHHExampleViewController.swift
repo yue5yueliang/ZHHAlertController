@@ -91,7 +91,7 @@ extension ZHHExampleViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = viewModel.sections[indexPath.section].items[indexPath.row]
         switch item.type {
-        case .segment: return 72
+        case .segment: return 88
         default: return 44
         }
     }

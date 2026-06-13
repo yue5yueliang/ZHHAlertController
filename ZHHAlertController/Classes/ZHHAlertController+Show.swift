@@ -68,74 +68,16 @@ extension ZHHAlertController {
         }
 
         alertViewWillAppear()
-        presentWithAnimation(in: view)
+        performPresentAnimation(in: view)
     }
 
     /// 关闭弹窗
     public func dismiss() {
         guard isShowing else { return }
 
-        let timeDisappear = fadeOutDuration > 0 ? fadeOutDuration : 0.1
-        let timeDelay: TimeInterval = 0.02
-
         isShowing = false
-
-        switch disappearAnimationType {
-        case .default:
-            performScaleOutAnimation(scale: 1.1, duration: timeDisappear, delay: timeDelay)
-        case .none:
-            cleanupAfterDismiss()
-        }
-
-        // 遮罩渐隐后移除
-        if let dimView = backgroundDimView {
-            UIView.animate(withDuration: timeDisappear, animations: {
-                dimView.alpha = 0
-            }, completion: { [weak self] _ in
-                dimView.removeFromSuperview()
-                self?.backgroundDimView = nil
-            })
-        }
-    }
-
-    // MARK: - 动画
-
-    /// 根据 appearAnimationType 执行出现动画
-    func presentWithAnimation(in view: UIView) {
-        let timeAppear = fadeInDuration > 0 ? fadeInDuration : 0.2
-
-        switch appearAnimationType {
-        case .default:
-            performScaleAnimation(scale: 1.1, duration: timeAppear, delay: 0)
-        case .none:
-            alertViewDidAppear()
-        }
-    }
-
-    /// 出现动画：从放大状态缩小到正常，同时渐显
-    func performScaleAnimation(scale: CGFloat, duration: TimeInterval, delay: TimeInterval) {
-        transform = CGAffineTransform(scaleX: scale, y: scale)
-        alpha = 0.6
-        UIView.animate(withDuration: duration, delay: delay, options: .curveEaseOut, animations: {
-            self.transform = .identity
-            self.alpha = 1
-        }, completion: { _ in
-            self.alertViewDidAppear()
-        })
-    }
-
-    /// 消失动画：放大并渐隐，完成后清理资源
-    func performScaleOutAnimation(scale: CGFloat, duration: TimeInterval, delay: TimeInterval) {
-        transform = .identity
-        alpha = 1.0
-        UIView.animate(withDuration: duration, delay: delay, options: .curveEaseIn, animations: {
-            self.transform = CGAffineTransform(scaleX: scale, y: scale)
-            self.alpha = 0
-        }, completion: { finished in
-            if finished || self.alpha <= 0.01 {
-                self.cleanupAfterDismiss()
-            }
-        })
+        let duration = fadeOutDuration > 0 ? fadeOutDuration : 0.1
+        performDismissAnimation(duration: duration, delay: 0.02)
     }
 
     /// 关闭后移除视图、约束、阴影层和按钮
@@ -152,6 +94,9 @@ extension ZHHAlertController {
             buttonStackView.removeArrangedSubview(subview)
             subview.removeFromSuperview()
         }
+
+        backgroundDimView?.removeFromSuperview()
+        backgroundDimView = nil
     }
 
     // MARK: - 交互

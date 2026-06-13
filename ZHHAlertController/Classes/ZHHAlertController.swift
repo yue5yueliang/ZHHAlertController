@@ -8,16 +8,6 @@
 
 import UIKit
 
-// MARK: - 动画类型
-
-/// 弹窗出现/消失动画类型
-public enum ZHHAlertAnimationType: Int {
-    /// 无动画
-    case none = 0
-    /// 缩放 + 渐显/渐隐
-    case `default` = 1
-}
-
 /// 按钮点击回调
 public typealias ZHHAlertControllerBlock = () -> Void
 
@@ -159,10 +149,14 @@ public class ZHHAlertController: UIView {
 
     // MARK: 动画配置
 
-    /// 出现动画类型
-    public var appearAnimationType: ZHHAlertAnimationType = .default
-    /// 消失动画类型
-    public var disappearAnimationType: ZHHAlertAnimationType = .default
+    /// 展示动画类型
+    public var presentationStyle: ZHHAlertAnimationStyle = .transform
+    /// 消失动画类型，为 nil 时沿用 presentationStyle
+    public var dismissalStyle: ZHHAlertAnimationStyle?
+    /// transform 展示动画起始缩放
+    public var presentationTransformScale: CGFloat = 0.5
+    /// transform 消失动画结束缩放
+    public var dismissalTransformScale: CGFloat = 0.5
     public var fadeInDuration: TimeInterval = 0.2  /// 淡入时长
     public var fadeOutDuration: TimeInterval = 0.1 /// 淡出时长
 

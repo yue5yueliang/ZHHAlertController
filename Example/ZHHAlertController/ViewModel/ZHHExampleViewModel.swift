@@ -60,7 +60,7 @@ final class ZHHExampleViewModel: NSObject, ZHHAlertControllerDelegate {
             ZHHExampleItem(title: "圆角", type: .slider(keyPath: \.cornerRadius, min: 0, max: 30, step: 1))
         ]),
         ZHHExampleSection(title: "动画与展示", items: [
-            ZHHExampleItem(title: "动画", type: .segment(keyPath: \.appearAnimationIndex, options: ["无", "默认"])),
+            ZHHExampleItem(title: "动画", type: .segment(keyPath: \.presentationStyleIndex, options: ["顶部", "底部", "左侧", "右侧", "淡入", "缩放"])),
             ZHHExampleItem(title: "展示方式", type: .segment(keyPath: \.showModeIndex, options: ["窗口", "当前视图"]))
         ])
     ]
@@ -155,8 +155,7 @@ final class ZHHExampleViewModel: NSObject, ZHHAlertControllerDelegate {
         popup.popupHeight = c.popupHeight
         popup.cornerRadius = c.cornerRadius
 
-        popup.appearAnimationType = c.appearAnimationType
-        popup.disappearAnimationType = c.appearAnimationType
+        popup.presentationStyle = c.presentationStyle
 
         popup.delegate = self
         return popup

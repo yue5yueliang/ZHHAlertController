@@ -101,12 +101,16 @@ class MyViewController: UIViewController, ZHHAlertControllerDelegate {
 
 ### 动画类型
 
-`ZHHAlertAnimationType` 枚举：
+`ZHHAlertAnimationStyle` 枚举：
 
 ```swift
-public enum ZHHAlertAnimationType: Int {
-    case none = 0      // 无动画
-    case `default` = 1 // 缩放 + 渐显/渐隐
+public enum ZHHAlertAnimationStyle: Int {
+    case fromTop = 0   // 从上方滑入/滑出
+    case fromBottom    // 从下方滑入/滑出
+    case fromLeft      // 从左侧滑入/滑出
+    case fromRight     // 从右侧滑入/滑出
+    case fade          // 透明度渐变
+    case transform     // 缩放变换
 }
 ```
 
@@ -147,8 +151,10 @@ public enum ZHHAlertAnimationType: Int {
 
 #### 动画配置
 
-- `appearAnimationType`：出现动画类型（默认 `.default`）
-- `disappearAnimationType`：消失动画类型（默认 `.default`）
+- `presentationStyle`：展示动画类型（默认 `.transform`）
+- `dismissalStyle`：消失动画类型，为 `nil` 时沿用 `presentationStyle`
+- `presentationTransformScale`：transform 展示动画起始缩放（默认 0.5）
+- `dismissalTransformScale`：transform 消失动画结束缩放（默认 0.5）
 - `fadeInDuration`：淡入时长（默认 0.2 秒）
 - `fadeOutDuration`：淡出时长（默认 0.1 秒）
 
@@ -201,8 +207,10 @@ let alert = ZHHAlertController()
 alert.title = "提示"
 alert.content = "使用默认动画"
 alert.cancelButtonTitle = "确定"
-alert.appearAnimationType = .default
-alert.disappearAnimationType = .default
+alert.presentationStyle = .transform
+alert.dismissalStyle = .fade
+alert.presentationTransformScale = 0.5
+alert.dismissalTransformScale = 0.5
 alert.fadeInDuration = 0.5
 alert.fadeOutDuration = 0.3
 alert.show()

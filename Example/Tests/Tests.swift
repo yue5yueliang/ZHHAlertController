@@ -1,5 +1,5 @@
 import XCTest
-import ZHHAlertViewController
+import ZHHAlertController
 
 class Tests: XCTestCase {
     

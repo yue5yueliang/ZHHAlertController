@@ -31,7 +31,7 @@ final class ZHHExampleSegmentCell: UITableViewCell {
         super.layoutSubviews()
         let padding: CGFloat = 16
         titleLabel.frame = CGRect(x: padding, y: 8, width: contentView.bounds.width - padding * 2, height: 20)
-        segment.frame = CGRect(x: padding, y: 34, width: contentView.bounds.width - padding * 2, height: 28)
+        segment.frame = CGRect(x: padding, y: 34, width: contentView.bounds.width - padding * 2, height: 44)
     }
 
     func configure(title: String, options: [String], selectedIndex: Int, onChange: @escaping (Int) -> Void) {

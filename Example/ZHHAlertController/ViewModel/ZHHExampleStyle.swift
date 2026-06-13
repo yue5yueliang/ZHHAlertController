@@ -1,5 +1,5 @@
 //
-//  ZHHStyleExamples.swift
+//  ZHHExampleStyle.swift
 //  ZHHAlertController_Example
 //
 //  Created by 桃色三岁 on 2022/7/27.
@@ -10,7 +10,7 @@ import UIKit
 import ZHHAlertController
 
 /// 样式示例枚举：内容组合 + 特殊样式，每项对应一个预设弹窗
-enum ZHHStyleExample: Int, CaseIterable {
+enum ZHHExampleStyle: Int, CaseIterable {
     /// 无标题，仅正文
     case noTitle
     /// 无正文，仅标题
